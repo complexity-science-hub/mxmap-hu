@@ -29,21 +29,8 @@ class TestCli:
         ):
             resolve_domains()
             mock_run.assert_called_once_with(
-                Path("municipality_domains.json"),
-                Path("overrides.json"),
-                date=None,
-            )
-
-    def test_resolve_domains_with_date(self):
-        with (
-            patch("mail_sovereignty.resolve.run", new_callable=AsyncMock) as mock_run,
-            patch("sys.argv", ["resolve-domains", "--date", "15-03-2026"]),
-        ):
-            resolve_domains()
-            mock_run.assert_called_once_with(
-                Path("municipality_domains.json"),
-                Path("overrides.json"),
-                date="15-03-2026",
+                Path("data/municipality_domains.json"),
+                Path("data/overrides.json"),
             )
 
     def test_resolve_domains_verbose(self):
@@ -60,7 +47,7 @@ class TestCli:
         ):
             classify_providers()
             mock_run.assert_called_once_with(
-                Path("municipality_domains.json"), Path("data.json")
+                Path("data/municipality_domains.json"), Path("data/data.json")
             )
 
     def test_classify_providers_verbose(self):

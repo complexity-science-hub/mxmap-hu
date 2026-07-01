@@ -740,12 +740,17 @@ def _add_shared_domain_flags(results: dict[str, dict[str, Any]]) -> None:
             result["flags"] = flags
 
 
-async def run(output_path: Path, overrides_path: Path) -> None:
+async def run(
+    output_path: Path,
+    overrides_path: Path,
+    municipalities_csv: Path | None = None,
+) -> None:
     overrides = load_overrides(overrides_path)
 
-    municipalities_csv = (
-        Path(__file__).resolve().parents[2] / "data" / "municipalities.csv"
-    )
+    if municipalities_csv is None:
+        municipalities_csv = (
+            Path(__file__).resolve().parents[2] / "data" / "municipalities.csv"
+        )
     municipalities_base = load_municipalities_csv(municipalities_csv)
 
     # Wikidata provides website URLs

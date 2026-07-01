@@ -11,14 +11,13 @@ from mail_sovereignty.resolve import (
     _process_scrape_response,
     build_urls,
     decrypt_typo3,
-    detect_website_mismatch,
-    extract_email_domains,
+    detect_mismatch,
+    extract_email_domain_counts,
     fetch_wikidata,
     guess_domains,
     load_overrides,
     resolve_municipality_domain,
     run,
-    score_domain_sources,
     scrape_email_domains,
     url_to_domain,
 )
@@ -29,13 +28,13 @@ from mail_sovereignty.resolve import (
 
 class TestUrlToDomain:
     def test_full_url_with_path(self):
-        assert url_to_domain("https://www.bern.ch/some/path") == "bern.ch"
+        assert url_to_domain("https://www.debrecen.hu/some/path") == "debrecen.hu"
 
     def test_no_scheme(self):
-        assert url_to_domain("bern.ch") == "bern.ch"
+        assert url_to_domain("debrecen.hu") == "debrecen.hu"
 
     def test_strips_www(self):
-        assert url_to_domain("https://www.example.ch") == "example.ch"
+        assert url_to_domain("https://www.example.hu") == "example.hu"
 
     def test_empty_string(self):
         assert url_to_domain("") is None
@@ -44,10 +43,10 @@ class TestUrlToDomain:
         assert url_to_domain(None) is None
 
     def test_bare_domain(self):
-        assert url_to_domain("example.ch") == "example.ch"
+        assert url_to_domain("example.hu") == "example.hu"
 
     def test_http_scheme(self):
-        assert url_to_domain("http://example.ch/page") == "example.ch"
+        assert url_to_domain("http://example.hu/page") == "example.hu"
 
 
 # ── guess_domains() ─────────────────────────────────────────────────
@@ -55,285 +54,49 @@ class TestUrlToDomain:
 
 class TestGuessDomains:
     def test_simple_name(self):
-        domains = guess_domains("Bern")
-        assert "bern.ch" in domains
-        assert "gemeinde-bern.ch" in domains
+        domains = guess_domains("Debrecen")
+        assert "debrecen.hu" in domains
+        assert "debrecen.asp.lgov.hu" in domains
 
     def test_umlaut(self):
-        domains = guess_domains("Zürich")
-        assert "zuerich.ch" in domains
+        domains = guess_domains("Győr")
+        assert "gyor.hu" in domains
 
-    def test_french_accent(self):
-        domains = guess_domains("Genève")
-        assert "geneve.ch" in domains
-
-    def test_parenthetical_stripped(self):
-        domains = guess_domains("Rüti (BE)")
-        assert any("rueti" in d for d in domains)
-        assert not any("BE" in d for d in domains)
-
-    def test_commune_prefix(self):
-        domains = guess_domains("Bern")
-        assert "commune-de-bern.ch" in domains
-
-    def test_apostrophe_removed(self):
-        domains = guess_domains("L'Abbaye")
-        assert any("abbaye" in d for d in domains)
-
-    def test_italian_prefix(self):
-        domains = guess_domains("Lugano")
-        assert "comune-di-lugano.ch" in domains
-
-    def test_stadt_prefix(self):
-        domains = guess_domains("Bern")
-        assert "stadt-bern.ch" in domains
-
-    def test_canton_subdomain(self):
-        domains = guess_domains("Niederglatt", canton="Kanton Zürich")
-        assert "niederglatt.zh.ch" in domains
-
-    def test_canton_subdomain_not_added_without_canton(self):
-        domains = guess_domains("Niederglatt", canton="")
-        assert not any(".zh.ch" in d for d in domains)
-
-    def test_compound_name_joined(self):
-        domains = guess_domains("Rüti bei Lyssach")
-        assert "ruetibeilyssach.ch" in domains
-
-    def test_slash_name_generates_individual_parts(self):
-        """'Celerina/Schlarigna' yields guesses for each part."""
-        domains = guess_domains("Celerina/Schlarigna")
-        assert "celerina.ch" in domains
-        assert "schlarigna.ch" in domains
-        assert "gemeinde-celerina.ch" in domains
-
-    def test_slash_name_with_spaces(self):
-        """'Sils im Engadin/Segl' yields guesses for each part."""
-        domains = guess_domains("Sils im Engadin/Segl")
-        assert "segl.ch" in domains
-        assert "sils-im-engadin.ch" in domains
-
-    def test_no_slash_unchanged(self):
-        """Names without '/' produce the same results as before."""
-        domains = guess_domains("Bern")
-        assert "bern.ch" in domains
-        assert "gemeinde-bern.ch" in domains
+    def test_suffixes(self):
+        domains = guess_domains("Debrecen")
+        assert "debrecen-kozseg.hu" in domains
+        assert "debrecen-nagykozseg.hu" in domains
+        assert "debrecen-varos.hu" in domains
+        assert "debrecen-falu.hu" in domains
+        assert "debrecen-onkormanyzat.hu" in domains
+        assert "debrecenkozseg.hu" in domains
+        assert "debrecennagykozseg.hu" in domains
+        assert "debrecenvaros.hu" in domains
+        assert "debrecenfalu.hu" in domains
+        assert "debrecenonkormanyzat.hu" in domains
 
 
-# ── detect_website_mismatch() ────────────────────────────────────────
+# ── detect_mismatch() ────────────────────────────────────────
 
 
 class TestDetectWebsiteMismatch:
     def test_matching_domain(self):
-        assert detect_website_mismatch("Schlieren", "schlieren.ch") is False
+        assert detect_mismatch("Eger", "eger.hu") is False
 
-    def test_umlaut_with_stadt_prefix(self):
-        assert detect_website_mismatch("Zürich", "stadt-zuerich.ch") is False
+    def test_umlaut_with_stadt_suffix(self):
+        assert detect_mismatch("Győr", "gyorvaros.hu") is False
 
     def test_mismatch(self):
-        assert detect_website_mismatch("Schlieren", "totally-unrelated.ch") is True
-
-    def test_canton_subdomain(self):
-        assert detect_website_mismatch("Teufen", "teufen.ar.ch") is False
-
-    def test_french_accent(self):
-        assert detect_website_mismatch("Genève", "geneve.ch") is False
-
-    def test_gemeinde_prefix(self):
-        assert (
-            detect_website_mismatch("Grindelwald", "gemeinde-grindelwald.ch") is False
-        )
-
-    def test_commune_prefix(self):
-        assert detect_website_mismatch("Montreux", "commune-de-montreux.ch") is False
+        assert detect_mismatch("Eger", "totally-unrelated.hu") is True
 
     def test_empty_name(self):
-        assert detect_website_mismatch("", "example.ch") is False
+        assert detect_mismatch("", "example.hu") is False
 
     def test_empty_domain(self):
-        assert detect_website_mismatch("Test", "") is False
+        assert detect_mismatch("Test", "") is False
 
-    def test_word_match(self):
-        # "Aeugst am Albis" — "aeugst" (5 chars) should match
-        assert detect_website_mismatch("Aeugst am Albis", "aeugst-albis.ch") is False
-
-
-# ── score_domain_sources() ──────────────────────────────────────────
-
-
-class TestScoreDomainSources:
-    def test_two_sources_agree_high(self):
-        sources = {
-            "scrape": {"example.ch"},
-            "wikidata": {"example.ch"},
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Example", "example.ch")
-        assert result["domain"] == "example.ch"
-        assert result["confidence"] == "high"
-        assert result["source"] == "scrape"
-
-    def test_single_source_medium(self):
-        sources = {
-            "scrape": {"example.ch"},
-            "wikidata": set(),
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Example", "example.ch")
-        assert result["domain"] == "example.ch"
-        assert result["confidence"] == "medium"
-
-    def test_guess_only_low(self):
-        sources = {
-            "scrape": set(),
-            "wikidata": set(),
-            "guess": {"example.ch"},
-        }
-        result = score_domain_sources(sources, "Example", "example.ch")
-        assert result["domain"] == "example.ch"
-        assert result["confidence"] == "low"
-        assert "guess_only" in result["flags"]
-
-    def test_no_domain_none(self):
-        sources = {
-            "scrape": set(),
-            "wikidata": set(),
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Example", "example.ch")
-        assert result["domain"] == ""
-        assert result["confidence"] == "none"
-
-    def test_sources_disagree(self):
-        """Flag when scrape found domains but none match the best domain."""
-        sources = {
-            "scrape": {"email-provider.ch"},
-            "wikidata": {"website.ch"},
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Test", "website.ch")
-        assert "sources_disagree" in result["flags"]
-
-    def test_extra_scrape_domains_not_disagreement(self):
-        """Extra junk domains in scrape shouldn't trigger disagree when best domain matches."""
-        sources = {
-            "scrape": {"junk.ch", "correct.ch"},
-            "wikidata": {"correct.ch"},
-            "guess": {"correct.ch", "gemeinde-correct.ch"},
-        }
-        result = score_domain_sources(sources, "Correct", "correct.ch")
-        assert result["domain"] == "correct.ch"
-        assert result["confidence"] == "high"
-        assert "sources_disagree" not in result["flags"]
-
-    def test_real_disagreement_scrape_vs_wikidata(self):
-        """Flag when scrape found domains but none match the wikidata-preferred best."""
-        sources = {
-            "scrape": {"email-provider.ch"},
-            "wikidata": {"website.ch"},
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Test", "website.ch")
-        assert "sources_disagree" in result["flags"]
-
-    def test_guess_extra_domains_no_disagreement(self):
-        """Extra guess domains should never trigger disagreement."""
-        sources = {
-            "scrape": {"correct.ch"},
-            "wikidata": {"correct.ch"},
-            "guess": {"correct.ch", "gemeinde-correct.ch", "correct.zh.ch"},
-        }
-        result = score_domain_sources(sources, "Correct", "correct.ch")
-        assert result["confidence"] == "high"
-        assert "sources_disagree" not in result["flags"]
-
-    def test_website_mismatch_flag(self):
-        sources = {
-            "scrape": {"example.ch"},
-            "wikidata": {"example.ch"},
-            "guess": set(),
-        }
-        # Name doesn't match the website domain
-        result = score_domain_sources(sources, "Totally Different", "unrelated-site.ch")
-        assert "website_mismatch" in result["flags"]
-        assert result["confidence"] == "medium"
-
-    def test_sources_detail_populated(self):
-        sources = {
-            "scrape": {"a.ch", "b.ch"},
-            "wikidata": {"a.ch"},
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Test", "a.ch")
-        assert result["sources_detail"]["scrape"] == ["a.ch", "b.ch"]
-        assert result["sources_detail"]["wikidata"] == ["a.ch"]
-        assert result["sources_detail"]["guess"] == []
-
-    def test_scrape_preferred_over_wikidata(self):
-        """When both scrape and wikidata find the same domain, source is scrape."""
-        sources = {
-            "scrape": {"example.ch"},
-            "wikidata": {"example.ch"},
-            "guess": {"example.ch"},
-        }
-        result = score_domain_sources(sources, "Example", "example.ch")
-        assert result["source"] == "scrape"
-
-    def test_tiebreaker_scrape_preferred(self):
-        """When tied on source count, the domain found by scrape wins."""
-        sources = {
-            "scrape": {"email.ch"},
-            "wikidata": {"website.ch"},
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Test", "website.ch")
-        assert result["domain"] == "email.ch"
-
-    def test_no_tie_unaffected(self):
-        """When one domain clearly wins on source count, tiebreaker doesn't change result."""
-        sources = {
-            "scrape": {"winner.ch"},
-            "wikidata": {"winner.ch"},
-            "guess": {"loser.ch"},
-        }
-        result = score_domain_sources(sources, "Test", "winner.ch")
-        assert result["domain"] == "winner.ch"
-
-    def test_redirect_source_counted(self):
-        """Redirect source counts toward agreement."""
-        sources = {
-            "scrape": {"3908.ch"},
-            "redirect": {"3908.ch"},
-            "wikidata": set(),
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Saas-Balen", "gemeinde-saas-balen.ch")
-        assert result["domain"] == "3908.ch"
-        assert result["confidence"] == "high"  # 2 sources agree
-
-    def test_redirect_only_medium_confidence(self):
-        """Redirect as sole source gives medium confidence."""
-        sources = {
-            "scrape": set(),
-            "redirect": {"3908.ch"},
-            "wikidata": set(),
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Saas-Balen", "gemeinde-saas-balen.ch")
-        assert result["domain"] == "3908.ch"
-        assert result["confidence"] == "medium"
-        assert result["source"] == "redirect"
-
-    def test_redirect_priority_between_scrape_and_wikidata(self):
-        """When redirect and wikidata both find the same domain, source is redirect."""
-        sources = {
-            "scrape": set(),
-            "redirect": {"3908.ch"},
-            "wikidata": {"3908.ch"},
-            "guess": set(),
-        }
-        result = score_domain_sources(sources, "Saas-Balen", "gemeinde-saas-balen.ch")
-        assert result["source"] == "redirect"
+    def test_www_prefix_stripped(self):
+        assert detect_mismatch("Eger", "www.eger.hu") is False
 
 
 # ── fetch_wikidata() ─────────────────────────────────────────────────
@@ -349,10 +112,10 @@ class TestFetchWikidata:
                     "results": {
                         "bindings": [
                             {
-                                "bfs": {"value": "351"},
-                                "itemLabel": {"value": "Bern"},
-                                "website": {"value": "https://www.bern.ch"},
-                                "cantonLabel": {"value": "Bern"},
+                                "id": {"value": "01234"},
+                                "itemLabel": {"value": "Debrecen"},
+                                "website": {"value": "https://www.debrecen.hu"},
+                                "countyLabel": {"value": "Hajdú-Bihar"},
                             },
                         ]
                     }
@@ -361,8 +124,8 @@ class TestFetchWikidata:
         )
 
         result = await fetch_wikidata()
-        assert "351" in result
-        assert result["351"]["name"] == "Bern"
+        assert "01234" in result
+        assert result["01234"]["name"] == "Debrecen"
 
     @respx.mock
     async def test_deduplication(self):
@@ -373,16 +136,16 @@ class TestFetchWikidata:
                     "results": {
                         "bindings": [
                             {
-                                "bfs": {"value": "351"},
-                                "itemLabel": {"value": "Bern"},
-                                "website": {"value": "https://www.bern.ch"},
-                                "cantonLabel": {"value": "Bern"},
+                                "id": {"value": "01234"},
+                                "itemLabel": {"value": "Debrecen"},
+                                "website": {"value": "https://www.debrecen.hu"},
+                                "countyLabel": {"value": "Hajdú-Bihar"},
                             },
                             {
-                                "bfs": {"value": "351"},
-                                "itemLabel": {"value": "Bern"},
-                                "website": {"value": "https://www.bern.ch/alt"},
-                                "cantonLabel": {"value": "Bern"},
+                                "id": {"value": "01234"},
+                                "itemLabel": {"value": "Debrecen"},
+                                "website": {"value": "https://www.debrecen.hu/alt"},
+                                "countyLabel": {"value": "Hajdú-Bihar"},
                             },
                         ]
                     }
@@ -400,10 +163,10 @@ class TestFetchWikidata:
 class TestLoadOverrides:
     def test_load_existing(self, tmp_path):
         p = tmp_path / "overrides.json"
-        p.write_text('{"261": {"domain": "zuerich.ch", "reason": "test"}}')
+        p.write_text('{"01234": {"domain": "gyor.hu", "reason": "test"}}')
         result = load_overrides(p)
-        assert "261" in result
-        assert result["261"]["domain"] == "zuerich.ch"
+        assert "01234" in result
+        assert result["01234"]["domain"] == "gyor.hu"
 
     def test_load_nonexistent(self, tmp_path):
         result = load_overrides(tmp_path / "nonexistent.json")
@@ -434,89 +197,87 @@ class TestDecryptTypo3:
         assert decrypt_typo3(encrypted, offset=2) == "mailto:a@b.ch"
 
 
-# ── extract_email_domains() ──────────────────────────────────────────
+# ── extract_email_domain_counts() ──────────────────────────────────────────
 
 
 class TestExtractEmailDomains:
     def test_plain_email(self):
-        html = "Contact us at info@gemeinde.ch for more info."
-        assert "gemeinde.ch" in extract_email_domains(html)
+        html = "Contact us at info@gemeinde.hu for more info."
+        assert "gemeinde.hu" in extract_email_domain_counts(html)
 
     def test_mailto_link(self):
-        html = '<a href="mailto:contact@town.ch">Email</a>'
-        assert "town.ch" in extract_email_domains(html)
+        html = '<a href="mailto:contact@town.hu">Email</a>'
+        assert "town.hu" in extract_email_domain_counts(html)
 
     def test_typo3_obfuscated(self):
         html = """linkTo_UnCryptMailto('kygjrm8yYz,af')"""
-        domains = extract_email_domains(html)
+        domains = extract_email_domain_counts(html)
         assert "b.ch" in domains
 
     def test_typo3_url_encoded_quotes(self):
         """TYPO3 regex matches %27 (URL-encoded single quote)."""
         html = "linkTo_UnCryptMailto(%27kygjrm8yYz,af%27)"
-        domains = extract_email_domains(html)
+        domains = extract_email_domain_counts(html)
         assert "b.ch" in domains
 
     def test_typo3_auto_offset_detection(self):
         """Auto-detect offset for non-standard TYPO3 encryption (e.g. offset 10)."""
         html = "linkTo_UnCryptMailto(%27wksvdy4sxpyJmovobsxk8mr%27)"
-        domains = extract_email_domains(html)
+        domains = extract_email_domain_counts(html)
         assert "celerina.ch" in domains
 
     def test_skip_domains_filtered(self):
         html = "admin@example.com test@sentry.io"
-        domains = extract_email_domains(html)
+        domains = extract_email_domain_counts(html)
         assert "example.com" not in domains
         assert "sentry.io" not in domains
 
     def test_no_emails(self):
         html = "<html><body>No contact here</body></html>"
-        assert extract_email_domains(html) == set()
+        assert not extract_email_domain_counts(html)
 
     def test_mailto_trailing_backslash(self):
         """BadEscape: backslash in mailto href should be stripped."""
-        html = '<a href="mailto:info@bernex.ch\\">contact</a>'
-        domains = extract_email_domains(html)
-        assert "bernex.ch" in domains
+        html = '<a href="mailto:info@debrecenex.hu\\">contact</a>'
+        domains = extract_email_domain_counts(html)
+        assert "debrecenex.hu" in domains
 
     def test_mailto_trailing_slash(self):
         """Trailing slash from malformed mailto should be stripped."""
-        html = '<a href="mailto:info@example.org/">contact</a>'
-        domains = extract_email_domains(html)
-        assert "example.org" in domains
+        html = '<a href="mailto:info@townhall.hu/">contact</a>'
+        domains = extract_email_domain_counts(html)
+        assert "townhall.hu" in domains
 
     def test_bracket_at_obfuscation(self):
-        html = "gemeinde[at]graechen.ch"
-        assert "graechen.ch" in extract_email_domains(html)
+        html = "gemeinde[at]graechen.hu"
+        assert "graechen.hu" in extract_email_domain_counts(html)
 
     def test_paren_at_obfuscation(self):
-        html = "info(at)gemeinde.ch"
-        assert "gemeinde.ch" in extract_email_domains(html)
+        html = "info(at)gemeinde.hu"
+        assert "gemeinde.hu" in extract_email_domain_counts(html)
 
     def test_bracket_at_with_spaces(self):
-        html = "info [at] town.ch"
-        assert "town.ch" in extract_email_domains(html)
+        html = "info [at] town.hu"
+        assert "town.hu" in extract_email_domain_counts(html)
 
     def test_bracket_at_uppercase(self):
-        html = "admin[AT]village.ch"
-        assert "village.ch" in extract_email_domains(html)
+        html = "admin[AT]village.hu"
+        assert "village.hu" in extract_email_domain_counts(html)
 
     def test_bracket_at_skip_domain(self):
         html = "user[at]example.com"
-        assert extract_email_domains(html) == set()
+        assert not extract_email_domain_counts(html)
 
     def test_domain_label_too_long(self):
         """Domains with labels > 63 chars should be filtered out."""
         long_label = "a" * 64
-        html = f"contact@{long_label}.ch"
-        assert extract_email_domains(html) == set()
+        html = f"contact@{long_label}.hu"
+        assert not extract_email_domain_counts(html)
 
     def test_domain_with_slash_filtered(self):
         """Domains containing a slash (URL fragment) should be filtered out."""
-        html = "user@galeriedelachampagne.ch/subpage"
-        domains = extract_email_domains(html)
-        # The EMAIL_RE may capture "galeriedelachampagne.ch" (valid part),
-        # but any domain with "/" should be filtered
+        html = "user@galeriedelachampagne.hu/subpage"
+        domains = extract_email_domain_counts(html)
         for d in domains:
             assert "/" not in d
 
@@ -526,15 +287,14 @@ class TestExtractEmailDomains:
 
 class TestBuildUrls:
     def test_bare_domain(self):
-        urls = build_urls("example.ch")
-        assert "https://www.example.ch/" in urls
-        assert "https://example.ch/" in urls
-        assert any("/kontakt" in u for u in urls)
+        urls = build_urls("example.hu")
+        assert "https://www.example.hu" in urls
+        assert "https://example.hu" in urls
 
     def test_www_prefix(self):
-        urls = build_urls("www.example.ch")
-        assert "https://www.example.ch/" in urls
-        assert "https://example.ch/" in urls
+        urls = build_urls("www.example.hu")
+        assert "https://www.example.hu" in urls
+        assert "https://example.hu" in urls
 
 
 # ── scrape_email_domains() ───────────────────────────────────────────
@@ -543,20 +303,20 @@ class TestBuildUrls:
 class TestScrapeEmailDomains:
     async def test_empty_domain(self):
         result, redirect = await scrape_email_domains(None, "")
-        assert result == set()
+        assert not result
         assert redirect is None
 
     async def test_with_emails_found(self):
         class FakeResponse:
             status_code = 200
-            text = "Contact us at info@gemeinde.ch"
-            url = httpx.URL("https://www.gemeinde.ch/")
+            text = "Contact us at info@gemeinde.hu"
+            url = httpx.URL("https://www.gemeinde.hu/")
 
         client = AsyncMock()
         client.get = AsyncMock(return_value=FakeResponse())
 
-        result, redirect = await scrape_email_domains(client, "gemeinde.ch")
-        assert "gemeinde.ch" in result
+        result, redirect = await scrape_email_domains(client, "gemeinde.hu")
+        assert "gemeinde.hu" in result
         assert redirect is None
 
     async def test_cross_domain_redirect_detected(self):
@@ -564,29 +324,29 @@ class TestScrapeEmailDomains:
 
         class FakeResponse:
             status_code = 200
-            text = "Contact us at gemeinde@3908.ch"
-            url = httpx.URL("https://www.3908.ch/")
+            text = "Contact us at gemeinde@3908.hu"
+            url = httpx.URL("https://www.3908.hu/")
 
         client = AsyncMock()
         client.get = AsyncMock(return_value=FakeResponse())
 
-        result, redirect = await scrape_email_domains(client, "gemeinde-saas-balen.ch")
-        assert "3908.ch" in result
-        assert redirect == "3908.ch"
+        result, redirect = await scrape_email_domains(client, "gemeinde-saas-balen.hu")
+        assert "3908.hu" in result
+        assert redirect == "3908.hu"
 
     async def test_www_redirect_not_flagged(self):
-        """Redirect from mygemeinde.ch to www.mygemeinde.ch is NOT a cross-domain redirect."""
+        """Redirect from mygemeinde.hu to www.mygemeinde.hu is NOT a cross-domain redirect."""
 
         class FakeResponse:
             status_code = 200
-            text = "Contact us at info@mygemeinde.ch"
-            url = httpx.URL("https://www.mygemeinde.ch/")
+            text = "Contact us at info@mygemeinde.hu"
+            url = httpx.URL("https://www.mygemeinde.hu/")
 
         client = AsyncMock()
         client.get = AsyncMock(return_value=FakeResponse())
 
-        result, redirect = await scrape_email_domains(client, "mygemeinde.ch")
-        assert "mygemeinde.ch" in result
+        result, redirect = await scrape_email_domains(client, "mygemeinde.hu")
+        assert "mygemeinde.hu" in result
         assert redirect is None
 
 
@@ -596,12 +356,12 @@ class TestScrapeEmailDomains:
 class TestResolveMunicipalityDomain:
     async def test_override_takes_priority(self):
         m = {
-            "bfs": "261",
-            "name": "Zürich",
-            "canton": "Kanton Zürich",
-            "website": "https://www.stadt-zuerich.ch",
+            "id": "01234",
+            "name": "Győr",
+            "county": "Győr-Moson-Sopron",
+            "website": "https://www.gyor-varos.hu",
         }
-        overrides = {"261": {"domain": "zuerich.ch", "reason": "test"}}
+        overrides = {"01234": {"domain": "gyor.hu", "reason": "test"}}
         client = AsyncMock()
 
         with patch(
@@ -611,7 +371,7 @@ class TestResolveMunicipalityDomain:
         ):
             result = await resolve_municipality_domain(m, overrides, client)
 
-        assert result["domain"] == "zuerich.ch"
+        assert result["domain"] == "gyor.hu"
         assert result["source"] == "override"
         assert result["confidence"] == "high"
         assert "sources_detail" in result
@@ -620,97 +380,108 @@ class TestResolveMunicipalityDomain:
     async def test_multi_source_scrape_and_wikidata(self):
         """When scrape and wikidata agree, confidence is high."""
         m = {
-            "bfs": "999",
+            "id": "999",
             "name": "Test",
-            "canton": "",
-            "website": "https://www.test.ch",
+            "county": "",
+            "website": "https://www.test.hu",
         }
         overrides = {}
 
         class FakeResponse:
             status_code = 200
-            text = "Contact us at info@test.ch"
-            url = httpx.URL("https://www.test.ch/")
+            text = "Contact us at info@test.hu"
+            url = httpx.URL("https://www.test.hu/")
 
         client = AsyncMock()
         client.get = AsyncMock(return_value=FakeResponse())
 
         async def fake_lookup_mx(domain):
-            if domain == "test.ch":
-                return ["mail.test.ch"]
+            if domain == "test.hu":
+                return ["mail.test.hu"]
             return []
 
         with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
             result = await resolve_municipality_domain(m, overrides, client)
 
-        assert result["domain"] == "test.ch"
+        assert result["domain"] == "test.hu"
         assert result["confidence"] == "high"
-        assert "test.ch" in result["sources_detail"]["scrape"]
-        assert "test.ch" in result["sources_detail"]["wikidata"]
+        assert "test.hu" in result["sources_detail"]["wikidata_scrape"]
+        assert "test.hu" in result["sources_detail"]["wikidata"]
 
-    async def test_scrape_only_medium(self):
-        """When only scrape finds a domain, confidence is medium."""
+    async def test_scrape_only_low(self):
+        """When only wikidata_scrape finds a domain (no agreement), confidence is low."""
+        # Use test-portal.hu as the website — not a guess domain for "Test"
+        # (guesses are test.hu, test-varos.hu, etc.), so the scrape cache is not shared.
         m = {
-            "bfs": "999",
+            "id": "999",
             "name": "Test",
-            "canton": "",
-            "website": "https://www.test.ch",
+            "county": "",
+            "website": "https://www.test-portal.hu",
         }
         overrides = {}
 
         class FakeResponse:
             status_code = 200
-            text = "Contact us at info@email-test.ch"
-            url = httpx.URL("https://www.test.ch/")
+            text = "Contact us at info@email-test.hu"
+            url = httpx.URL("https://www.test-portal.hu/")
+
+        async def fake_get(url, **_):
+            if url.startswith("https://www.test-portal.hu") or url.startswith(
+                "https://test-portal.hu"
+            ):
+                return FakeResponse()
+            return httpx.Response(404)
 
         client = AsyncMock()
-        client.get = AsyncMock(return_value=FakeResponse())
+        client.get = AsyncMock(side_effect=fake_get)
 
         async def fake_lookup_mx(domain):
-            if domain == "email-test.ch":
-                return ["mail.email-test.ch"]
+            if domain == "email-test.hu":
+                return ["mail.email-test.hu"]
             return []
 
         with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
             result = await resolve_municipality_domain(m, overrides, client)
 
-        assert result["domain"] == "email-test.ch"
-        assert result["source"] == "scrape"
+        assert result["domain"] == "email-test.hu"
+        assert result["source"] == "wikidata_scrape"
+        assert result["confidence"] == "low"
 
     async def test_scrape_finds_different_domain_than_website(self):
-        """Teufen case: website teufen.ch has MX, but scraping finds teufen.ar.ch."""
+        """Emőd case: website emod.hu has MX, but scraping finds emodph.hu."""
         m = {
-            "bfs": "3024",
-            "name": "Teufen",
-            "canton": "Kanton Appenzell Ausserrhoden",
-            "website": "https://www.teufen.ch",
+            "id": "04677",
+            "name": "Emőd",
+            "county": "Borsod-Abaúj-Zemplén",
+            "website": "https://www.emod.hu",
         }
+
         overrides = {}
 
         class FakeResponse:
             status_code = 200
-            text = '<a href="mailto:gemeinde@teufen.ar.ch">Email</a>'
-            url = httpx.URL("https://www.teufen.ch/")
+            text = '<a href="mailto:hivatalemod@emodph.hu">Email</a>'
+            url = httpx.URL("https://www.emod.hu/")
 
         client = AsyncMock()
         client.get = AsyncMock(return_value=FakeResponse())
 
         async def fake_lookup_mx(domain):
-            if domain == "teufen.ch":
-                return ["mail.teufen.ch"]
-            if domain == "teufen.ar.ch":
-                return ["mail.teufen.ar.ch"]
+            if domain == "emod.hu":
+                return ["emod.hu"]
+            if domain == "emodph.hu":
+                return ["emodph.hu"]
             return []
 
         with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
             result = await resolve_municipality_domain(m, overrides, client)
 
         # Both scrape and wikidata found domains
-        assert "teufen.ar.ch" in result["sources_detail"]["scrape"]
-        assert "teufen.ch" in result["sources_detail"]["wikidata"]
+        assert "emodph.hu" in result["sources_detail"]["wikidata_scrape"]
+        assert "emod.hu" in result["sources_detail"]["wikidata"]
 
     async def test_none_when_no_domain_found(self):
-        m = {"bfs": "999", "name": "Zzz", "canton": "", "website": ""}
+        m = {"id": "999", "name": "Zzz", "county": "", "website": ""}
         overrides = {}
         client = AsyncMock()
 
@@ -730,35 +501,35 @@ class TestResolveMunicipalityDomain:
     async def test_guess_only_low_confidence(self):
         """When only guess finds a domain, confidence is low."""
         m = {
-            "bfs": "999",
+            "id": "999",
             "name": "Testingen",
-            "canton": "Kanton Zürich",
+            "county": "Győr-Moson-Sopron",
             "website": "",
         }
         overrides = {}
         client = AsyncMock()
 
         async def fake_lookup_mx(domain):
-            if domain == "testingen.ch":
-                return ["mail.testingen.ch"]
+            if domain == "testingen.hu":
+                return ["mail.testingen.hu"]
             return []
 
         with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
             result = await resolve_municipality_domain(m, overrides, client)
 
-        assert result["domain"] == "testingen.ch"
+        assert result["domain"] == "testingen.hu"
         assert result["source"] == "guess"
         assert result["confidence"] == "low"
         assert "guess_only" in result["flags"]
 
-    async def test_bfs_only_flag(self):
-        """Municipalities only in BFS get the bfs_only flag."""
+    async def test_id_only_flag(self):
+        """Municipalities only in ID get the id_only flag."""
         m = {
-            "bfs": "999",
+            "id": "999",
             "name": "NewTown",
-            "canton": "",
+            "county": "",
             "website": "",
-            "bfs_only": True,
+            "id_only": True,
         }
         overrides = {}
         client = AsyncMock()
@@ -770,60 +541,92 @@ class TestResolveMunicipalityDomain:
         ):
             result = await resolve_municipality_domain(m, overrides, client)
 
-        assert "bfs_only" in result["flags"]
+        assert "id_only" in result["flags"]
 
     async def test_redirect_domain_used_as_source(self):
-        """Saas-Balen case: website redirects to postal code domain."""
+        """Gulács case: website gulacs.hu redirects to gulacskozseg.hu."""
         m = {
-            "bfs": "6289",
-            "name": "Saas-Balen",
-            "canton": "Kanton Wallis",
-            "website": "https://www.gemeinde-saas-balen.ch",
+            "id": "29443",
+            "name": "Gulács",
+            "county": "Szabolcs-Szatmár-Bereg",
+            "website": "https://www.gulacs.hu",
         }
         overrides = {}
 
         class FakeResponse:
             status_code = 200
-            text = "Contact us at gemeinde@3908.ch"
-            url = httpx.URL("https://www.3908.ch/")
+            text = "Hivatal: hivatal@gulacskozseg.hu"
+            url = httpx.URL("https://www.gulacskozseg.hu/")  # redirected URL
 
         client = AsyncMock()
         client.get = AsyncMock(return_value=FakeResponse())
 
         async def fake_lookup_mx(domain):
-            if domain == "3908.ch":
-                return ["mail.3908.ch"]
+            if domain == "gulacskozseg.hu":
+                return ["mail.gulacskozseg.hu"]
             return []
 
         with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
             result = await resolve_municipality_domain(m, overrides, client)
 
-        assert result["domain"] == "3908.ch"
-        assert "3908.ch" in result["sources_detail"]["scrape"]
-        assert "3908.ch" in result["sources_detail"]["redirect"]
-        assert result["confidence"] == "high"  # scrape + redirect agree
+        assert result["domain"] == "gulacskozseg.hu"
+        assert "gulacskozseg.hu" in result["sources_detail"]["wikidata_scrape"]
+        assert "gulacskozseg.hu" in result["sources_detail"]["wikidata_redirect"]
+        assert (
+            result["confidence"] == "high"
+        )  # wikidata_scrape + wikidata_redirect agree
+
+    async def test_sources_disagree_flag(self):
+        """sources_disagree when override scrape and wikidata find different domains."""
+        m = {
+            "id": "01234",
+            "name": "Debrecen",
+            "county": "Hajdú-Bihar",
+            "website": "https://www.debrecen-info.hu",
+        }
+        # Override has a website (not a direct domain), so override scrape runs
+        overrides = {"01234": {"website": "https://www.debrecen-hivatal.hu"}}
+
+        async def fake_get(url, **_):
+            if "debrecen-hivatal.hu" in url:
+
+                class R:
+                    status_code = 200
+                    text = '<a href="mailto:hivatal@debrecen-ph.hu">contact</a>'
+                    url = httpx.URL("https://www.debrecen-hivatal.hu/")
+
+                return R()
+            return httpx.Response(404)
+
+        client = AsyncMock()
+        client.get = AsyncMock(side_effect=fake_get)
+
+        async def fake_lookup_mx(domain):
+            if domain in ("debrecen-info.hu", "debrecen-ph.hu"):
+                return [f"mail.{domain}"]
+            return []
+
+        with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
+            result = await resolve_municipality_domain(m, overrides, client)
+
+        assert "sources_disagree" in result["flags"]
+        assert "debrecen-info.hu" in result["sources_detail"]["wikidata"]
+        assert "debrecen-ph.hu" in result["sources_detail"]["override_scrape"]
 
 
 # ── run() ────────────────────────────────────────────────────────────
 
 
-# Sample BFS API CSV response
-BFS_CSV_HEADER = "HistoricalCode,BfsCode,ValidFrom,ValidTo,Level,Parent,Name,ShortName,Inscription,Radiation,Rec_Type_fr,Rec_Type_de"
-SAMPLE_BFS_CSV = f"""{BFS_CSV_HEADER}
-1,1,12.09.1848,,1,,Bern,BE,,,,
-200,200,12.09.1848,,2,1,Amtsbezirk Bern,Bern,,,,
-351,351,12.09.1848,,3,200,Bern,Bern,,,,
-"""
-EMPTY_BFS_CSV = BFS_CSV_HEADER + "\n"
+# Sample municipalities CSV (matches data/municipalities.csv format)
+SAMPLE_CSV = '"name,id,county"\n"Debrecen,01234,Hajdú-Bihar"\n'
+EMPTY_CSV = '"name,id,county"\n'
 
 
 class TestResolveRun:
     @respx.mock
     async def test_writes_output(self, tmp_path):
-        # Mock BFS API
-        respx.get("https://www.agvchapp.bfs.admin.ch/api/communes/snapshot").mock(
-            return_value=httpx.Response(200, text=SAMPLE_BFS_CSV)
-        )
+        csv_path = tmp_path / "municipalities.csv"
+        csv_path.write_text(SAMPLE_CSV, encoding="utf-8")
 
         # Mock Wikidata
         respx.post("https://query.wikidata.org/sparql").mock(
@@ -833,10 +636,10 @@ class TestResolveRun:
                     "results": {
                         "bindings": [
                             {
-                                "bfs": {"value": "351"},
-                                "itemLabel": {"value": "Bern"},
-                                "website": {"value": "https://www.bern.ch"},
-                                "cantonLabel": {"value": "Bern"},
+                                "id": {"value": "01234"},
+                                "itemLabel": {"value": "Debrecen"},
+                                "website": {"value": "https://www.debrecen.hu"},
+                                "countyLabel": {"value": "Hajdú-Bihar"},
                             },
                         ]
                     }
@@ -844,32 +647,29 @@ class TestResolveRun:
             )
         )
 
-        # Scraping runs first now; mock scrape to return no emails (404)
-        respx.get(url__regex=r"https://.*bern\.ch.*").mock(
+        respx.get(url__regex=r"https://.*debrecen\.hu.*").mock(
             return_value=httpx.Response(404)
         )
 
         with patch(
             "mail_sovereignty.resolve.lookup_mx",
             new_callable=AsyncMock,
-            return_value=["mx.bern.ch"],
+            return_value=["mx.debrecen.hu"],
         ):
             output = tmp_path / "municipality_domains.json"
             overrides = tmp_path / "overrides.json"
             overrides.write_text("{}")
-            await run(output, overrides, date="01-01-2026")
+            await run(output, overrides, municipalities_csv=csv_path)
 
         assert output.exists()
         data = json.loads(output.read_text())
         assert data["total"] == 1
-        assert "351" in data["municipalities"]
+        assert "01234" in data["municipalities"]
 
     @respx.mock
     async def test_adds_override_only_municipalities(self, tmp_path):
-        # Mock BFS API (empty - no municipalities)
-        respx.get("https://www.agvchapp.bfs.admin.ch/api/communes/snapshot").mock(
-            return_value=httpx.Response(200, text=EMPTY_BFS_CSV)
-        )
+        csv_path = tmp_path / "municipalities.csv"
+        csv_path.write_text(EMPTY_CSV, encoding="utf-8")
 
         # Mock Wikidata (empty)
         respx.post("https://query.wikidata.org/sparql").mock(
@@ -882,25 +682,25 @@ class TestResolveRun:
         with patch(
             "mail_sovereignty.resolve.lookup_mx",
             new_callable=AsyncMock,
-            return_value=["mx.test.ch"],
+            return_value=["mx.test.hu"],
         ):
             output = tmp_path / "municipality_domains.json"
             overrides = tmp_path / "overrides.json"
             overrides.write_text(
-                '{"2056": {"domain": "fetigny-menieres.ch", "name": "Fetigny-Menieres", "canton": "Kanton Freiburg", "reason": "Missing from Wikidata"}}'
+                '{"02056": {"domain": "gyongyos.hu", "name": "Gyöngyös", "county": "Heves", "reason": "Missing from Wikidata"}}',
+                encoding="utf-8",
             )
-            await run(output, overrides, date="01-01-2026")
+            await run(output, overrides, municipalities_csv=csv_path)
 
         data = json.loads(output.read_text())
-        assert "2056" in data["municipalities"]
-        assert data["municipalities"]["2056"]["source"] == "override"
+        assert "02056" in data["municipalities"]
+        assert data["municipalities"]["02056"]["source"] == "override"
 
     @respx.mock
-    async def test_bfs_wikidata_merge(self, tmp_path):
-        """BFS municipalities get Wikidata website URLs merged in."""
-        respx.get("https://www.agvchapp.bfs.admin.ch/api/communes/snapshot").mock(
-            return_value=httpx.Response(200, text=SAMPLE_BFS_CSV)
-        )
+    async def test_csv_wikidata_merge(self, tmp_path):
+        """CSV municipalities get Wikidata website URLs merged in."""
+        csv_path = tmp_path / "municipalities.csv"
+        csv_path.write_text(SAMPLE_CSV, encoding="utf-8")
 
         respx.post("https://query.wikidata.org/sparql").mock(
             return_value=httpx.Response(
@@ -909,10 +709,10 @@ class TestResolveRun:
                     "results": {
                         "bindings": [
                             {
-                                "bfs": {"value": "351"},
-                                "itemLabel": {"value": "Bern"},
-                                "website": {"value": "https://www.bern.ch"},
-                                "cantonLabel": {"value": "Bern"},
+                                "id": {"value": "01234"},
+                                "itemLabel": {"value": "Debrecen"},
+                                "website": {"value": "https://www.debrecen.hu"},
+                                "countyLabel": {"value": "Hajdú-Bihar"},
                             },
                         ]
                     }
@@ -920,23 +720,23 @@ class TestResolveRun:
             )
         )
 
-        respx.get(url__regex=r"https://.*bern\.ch.*").mock(
+        respx.get(url__regex=r"https://.*debrecen\.hu.*").mock(
             return_value=httpx.Response(404)
         )
 
         with patch(
             "mail_sovereignty.resolve.lookup_mx",
             new_callable=AsyncMock,
-            return_value=["mx.bern.ch"],
+            return_value=["mx.debrecen.hu"],
         ):
             output = tmp_path / "municipality_domains.json"
             overrides = tmp_path / "overrides.json"
             overrides.write_text("{}")
-            await run(output, overrides, date="01-01-2026")
+            await run(output, overrides, municipalities_csv=csv_path)
 
         data = json.loads(output.read_text())
-        entry = data["municipalities"]["351"]
-        assert entry["name"] == "Bern"
+        entry = data["municipalities"]["01234"]
+        assert entry["name"] == "Debrecen"
         assert "sources_detail" in entry
 
 
@@ -946,10 +746,10 @@ WIKIDATA_JSON = {
     "results": {
         "bindings": [
             {
-                "bfs": {"value": "351"},
-                "itemLabel": {"value": "Bern"},
-                "website": {"value": "https://www.bern.ch"},
-                "cantonLabel": {"value": "Bern"},
+                "id": {"value": "01234"},
+                "itemLabel": {"value": "Debrecen"},
+                "website": {"value": "https://www.debrecen.hu"},
+                "countyLabel": {"value": "Hajdú-Bihar"},
             },
         ]
     }
@@ -967,7 +767,7 @@ class TestFetchWikidataRetry:
             ]
         )
         result = await fetch_wikidata()
-        assert "351" in result
+        assert "01234" in result
         assert route.call_count == 2
 
     @respx.mock
@@ -989,9 +789,9 @@ class TestScrapeErrorLogging:
         client = AsyncMock()
         client.get = AsyncMock(side_effect=ConnectionError("refused"))
 
-        result, redirect = await scrape_email_domains(client, "fail.ch")
+        result, redirect = await scrape_email_domains(client, "fail.hu")
 
-        assert result == set()
+        assert not result
         assert redirect is None
         assert any("Scrape" in msg and "refused" in msg for msg in caplog.messages)
 
@@ -1003,16 +803,10 @@ class TestResolveRunErrorIsolation:
     @respx.mock
     async def test_skips_failing_municipality(self, tmp_path):
         """One failing resolution should not crash the whole run."""
-        # Two municipalities in BFS
-        csv_text = f"""{BFS_CSV_HEADER}
-1,1,12.09.1848,,1,,Bern,BE,,,,
-200,200,12.09.1848,,2,1,Amtsbezirk Bern,Bern,,,,
-351,351,12.09.1848,,3,200,Bern,Bern,,,,
-300,300,12.09.1848,,2,1,Amtsbezirk Thun,Thun,,,,
-942,942,12.09.1848,,3,300,Thun,Thun,,,,
-"""
-        respx.get("https://www.agvchapp.bfs.admin.ch/api/communes/snapshot").mock(
-            return_value=httpx.Response(200, text=csv_text)
+        csv_path = tmp_path / "municipalities.csv"
+        csv_path.write_text(
+            '"name,id,county"\n"Debrecen,01234,Hajdú-Bihar"\n"Nyíregyháza,00942,Szabolcs-Szatmár-Bereg"\n',
+            encoding="utf-8",
         )
         respx.post("https://query.wikidata.org/sparql").mock(
             return_value=httpx.Response(200, json={"results": {"bindings": []}})
@@ -1023,13 +817,13 @@ class TestResolveRunErrorIsolation:
         async def _flaky_resolve(m, overrides, client):
             nonlocal call_count
             call_count += 1
-            if m["bfs"] == "942":
+            if m["id"] == "00942":
                 raise RuntimeError("boom")
             return {
-                "bfs": m["bfs"],
+                "id": m["id"],
                 "name": m["name"],
-                "canton": m.get("canton", ""),
-                "domain": "test.ch",
+                "county": m.get("county", ""),
+                "domain": "test.hu",
                 "source": "guess",
                 "confidence": "low",
                 "sources_detail": {},
@@ -1043,22 +837,21 @@ class TestResolveRunErrorIsolation:
             output = tmp_path / "municipality_domains.json"
             overrides = tmp_path / "overrides.json"
             overrides.write_text("{}")
-            await run(output, overrides, date="01-01-2026")
+            await run(output, overrides, municipalities_csv=csv_path)
 
         data = json.loads(output.read_text())
-        # Bern succeeded, Thun was skipped
-        assert "351" in data["municipalities"]
-        assert "942" not in data["municipalities"]
+        # Debrecen succeeded, Nyíregyháza was skipped
+        assert "01234" in data["municipalities"]
+        assert "00942" not in data["municipalities"]
 
 
 class TestResolveRunLogging:
     @respx.mock
-    async def test_logs_bfs_only_warning(self, tmp_path, caplog):
-        """BFS-only municipalities should produce a warning log."""
-        # BFS has Bern, Wikidata is empty -> Bern is BFS-only
-        respx.get("https://www.agvchapp.bfs.admin.ch/api/communes/snapshot").mock(
-            return_value=httpx.Response(200, text=SAMPLE_BFS_CSV)
-        )
+    async def test_logs_id_only_warning(self, tmp_path, caplog):
+        """CSV-only municipalities should produce a warning log."""
+        # CSV has Debrecen, Wikidata is empty -> Debrecen is id-only
+        csv_path = tmp_path / "municipalities.csv"
+        csv_path.write_text(SAMPLE_CSV, encoding="utf-8")
         respx.post("https://query.wikidata.org/sparql").mock(
             return_value=httpx.Response(200, json={"results": {"bindings": []}})
         )
@@ -1071,10 +864,10 @@ class TestResolveRunLogging:
             output = tmp_path / "municipality_domains.json"
             overrides = tmp_path / "overrides.json"
             overrides.write_text("{}")
-            await run(output, overrides, date="01-01-2026")
+            await run(output, overrides, municipalities_csv=csv_path)
 
         assert any(
-            "municipalities in BFS but missing from Wikidata" in msg
+            "municipalities in id but missing from Wikidata" in msg
             for msg in caplog.messages
         )
 
@@ -1084,44 +877,44 @@ class TestResolveRunLogging:
 
 class TestProcessScrapeResponse:
     def test_non_200_returns_unchanged(self):
-        r = httpx.Response(404, request=httpx.Request("GET", "https://example.ch"))
-        domains, redirect = _process_scrape_response(r, "example.ch", set(), None)
-        assert domains == set()
+        r = httpx.Response(404, request=httpx.Request("GET", "https://example.hu"))
+        domains, redirect = _process_scrape_response(r, "example.hu", set(), None)
+        assert not domains
         assert redirect is None
 
     def test_200_extracts_email_and_redirect(self):
         r = httpx.Response(
             200,
-            text="Contact: info@3908.ch",
-            request=httpx.Request("GET", "https://www.3908.ch/"),
+            text="Contact: info@3908.hu",
+            request=httpx.Request("GET", "https://www.3908.hu/"),
         )
         domains, redirect = _process_scrape_response(
-            r, "gemeinde-saas-balen.ch", set(), None
+            r, "gemeinde-saas-balen.hu", set(), None
         )
-        assert "3908.ch" in domains
-        assert redirect == "3908.ch"
+        assert "3908.hu" in domains
+        assert redirect == "3908.hu"
 
     def test_200_same_domain_no_redirect(self):
         r = httpx.Response(
             200,
-            text="Contact: info@mygemeinde.ch",
-            request=httpx.Request("GET", "https://www.mygemeinde.ch/"),
+            text="Contact: info@mygemeinde.hu",
+            request=httpx.Request("GET", "https://www.mygemeinde.hu/"),
         )
-        domains, redirect = _process_scrape_response(r, "mygemeinde.ch", set(), None)
-        assert "mygemeinde.ch" in domains
+        domains, redirect = _process_scrape_response(r, "mygemeinde.hu", set(), None)
+        assert "mygemeinde.hu" in domains
         assert redirect is None
 
     def test_preserves_existing_redirect(self):
         r = httpx.Response(
             200,
-            text="Contact: info@other.ch",
-            request=httpx.Request("GET", "https://www.other.ch/"),
+            text="Contact: info@other.hu",
+            request=httpx.Request("GET", "https://www.other.hu/"),
         )
         domains, redirect = _process_scrape_response(
-            r, "example.ch", set(), "already.ch"
+            r, "example.hu", set(), "already.hu"
         )
-        assert "other.ch" in domains
-        assert redirect == "already.ch"
+        assert "other.hu" in domains
+        assert redirect == "already.hu"
 
 
 # ── _is_ssl_error() ─────────────────────────────────────────────────
@@ -1169,8 +962,8 @@ class TestSslRetry:
 
         fake_response = AsyncMock()
         fake_response.status_code = 200
-        fake_response.text = "Contact: gemeinde@3908.ch"
-        fake_response.url = httpx.URL("https://www.3908.ch/")
+        fake_response.text = "Contact: gemeinde@3908.hu"
+        fake_response.url = httpx.URL("https://www.3908.hu/")
 
         with patch(
             "mail_sovereignty.resolve._fetch_insecure",
@@ -1178,11 +971,11 @@ class TestSslRetry:
             return_value=fake_response,
         ) as mock_fetch:
             domains, redirect = await scrape_email_domains(
-                client, "gemeinde-saas-balen.ch"
+                client, "gemeinde-saas-balen.hu"
             )
 
-        assert "3908.ch" in domains
-        assert redirect == "3908.ch"
+        assert "3908.hu" in domains
+        assert redirect == "3908.hu"
         mock_fetch.assert_called()
 
     @pytest.mark.asyncio
@@ -1197,9 +990,9 @@ class TestSslRetry:
             "mail_sovereignty.resolve._fetch_insecure",
             new_callable=AsyncMock,
         ) as mock_fetch:
-            domains, redirect = await scrape_email_domains(client, "example.ch")
+            domains, redirect = await scrape_email_domains(client, "example.hu")
 
-        assert domains == set()
+        assert not domains
         assert redirect is None
         mock_fetch.assert_not_called()
 
@@ -1220,7 +1013,7 @@ class TestSslRetry:
             new_callable=AsyncMock,
             side_effect=httpx.ConnectError("still broken"),
         ):
-            domains, redirect = await scrape_email_domains(client, "example.ch")
+            domains, redirect = await scrape_email_domains(client, "example.hu")
 
-        assert domains == set()
+        assert not domains
         assert redirect is None

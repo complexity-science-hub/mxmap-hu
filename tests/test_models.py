@@ -16,8 +16,6 @@ class TestProvider:
         assert Provider.MS365 == "ms365"
         assert Provider.GOOGLE == "google"
         assert Provider.AWS == "aws"
-        assert Provider.INFOMANIAK == "infomaniak"
-        assert Provider.SWISS_ISP == "swiss-isp"
         assert Provider.INDEPENDENT == "independent"
 
     def test_str_serialization(self):
@@ -26,12 +24,60 @@ class TestProvider:
 
     def test_all_members(self):
         assert set(Provider) == {
+            # US cloud
             Provider.MS365,
             Provider.GOOGLE,
             Provider.AWS,
-            Provider.INFOMANIAK,
-            Provider.SWISS_ISP,
+            # Hungarian catch-all
+            Provider.HUN_ISP,
             Provider.INDEPENDENT,
+            Provider.UNRESOLVED,
+            Provider.UNKNOWN,
+            # Hungarian named providers
+            Provider.DOTROLL,
+            Provider.MEGACP,
+            Provider.MEDIACENTER,
+            Provider.INTEGRITY,
+            Provider.POSTMASTER_HU,
+            Provider.ATW,
+            Provider.RACKHOST,
+            Provider.MAXER,
+            Provider.ABPLUSZ,
+            Provider.DIMA,
+            Provider.NETHELY,
+            Provider.TARHELY_EU,
+            Provider.RATIOR,
+            Provider.WEB200,
+            Provider.TOLNA_NET,
+            Provider.LINUXWEB,
+            Provider.GYOR_NET,
+            Provider.INTEGRANET,
+            Provider.T_ONLINE,
+            Provider.WEBTAR,
+            Provider.AVPMS,
+            Provider.ISISCOM,
+            Provider.MAXMAIL,
+            Provider.MICROWARE,
+            Provider.GLOBALNET2000,
+            Provider.UIWEBSERVICES,
+            Provider.ASPNET,
+            Provider.ININET,
+            Provider.DTNET,
+            Provider.SPAMZABALO,
+            Provider.HOSTING4U,
+            Provider.GIGANET,
+            Provider.SMTP_HU,
+            Provider.UNAS,
+            # EU providers
+            Provider.FORPSI,
+            Provider.WEBSUPPORT,
+            Provider.ZOHO,
+            Provider.MIGADU,
+            Provider.HOSTINGER,
+            Provider.VSHOSTING,
+            Provider.NETCLASS,
+            Provider.WEBNODE,
+            Provider.HOSTNS_IO,
         }
 
 

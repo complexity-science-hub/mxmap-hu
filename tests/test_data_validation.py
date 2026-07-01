@@ -14,8 +14,8 @@ import pytest
 from mail_sovereignty.models import Provider
 from mail_sovereignty.pipeline import PROVIDER_OUTPUT_NAMES
 
-_MUNICIPALITY_DOMAINS_PATH = Path("municipality_domains.json")
-_DATA_JSON_PATH = Path("data.json")
+_MUNICIPALITY_DOMAINS_PATH = Path("data/municipality_domains.json")
+_DATA_JSON_PATH = Path("data/data.json")
 
 # Build valid provider output names: all mapped values + all unmapped enum values
 _VALID_PROVIDER_NAMES = {PROVIDER_OUTPUT_NAMES.get(p.value, p.value) for p in Provider}
@@ -75,7 +75,7 @@ class TestMunicipalityDomainsStructure:
 
     def test_municipality_count_plausible(self, municipality_domains_data):
         count = len(municipality_domains_data["municipalities"])
-        assert 2000 <= count <= 2300, f"unexpected count: {count}"
+        assert 2000 <= count <= 3200, f"unexpected count: {count}"
 
 
 # ── municipality_domains.json entries ─────────────────────────────────
@@ -83,9 +83,9 @@ class TestMunicipalityDomainsStructure:
 
 class TestMunicipalityDomainsEntries:
     _REQUIRED_FIELDS = {
-        "bfs",
+        "id",
         "name",
-        "canton",
+        "county",
         "domain",
         "source",
         "confidence",
@@ -104,13 +104,11 @@ class TestMunicipalityDomainsEntries:
             ),
         )
 
-    def test_bfs_key_matches_entry(self, municipality_domains_data):
+    def test_id_key_matches_entry(self, municipality_domains_data):
         entries = municipality_domains_data["municipalities"]
         _collect_failures(
             entries,
-            lambda k, e: (
-                f"key={k} but bfs={e.get('bfs')}" if k != e.get("bfs") else None
-            ),
+            lambda k, e: f"key={k} but id={e.get('id')}" if k != e.get("id") else None,
         )
 
     def test_no_empty_name(self, municipality_domains_data):
@@ -120,11 +118,11 @@ class TestMunicipalityDomainsEntries:
             lambda k, e: f"{k}: empty name" if not e.get("name") else None,
         )
 
-    def test_bfs_is_numeric(self, municipality_domains_data):
+    def test_id_is_numeric(self, municipality_domains_data):
         entries = municipality_domains_data["municipalities"]
         _collect_failures(
             entries,
-            lambda k, e: f"{k}: non-numeric BFS" if not k.isdigit() else None,
+            lambda k, e: f"{k}: non-numeric id" if not k.isdigit() else None,
         )
 
     def test_domain_nonempty_when_high_confidence(self, municipality_domains_data):
@@ -158,7 +156,7 @@ class TestDataJsonStructure:
 
     def test_municipality_count_plausible(self, data_json_data):
         count = len(data_json_data["municipalities"])
-        assert 2000 <= count <= 2300, f"unexpected count: {count}"
+        assert 2000 <= count <= 3200, f"unexpected count: {count}"
 
     def test_counts_sum_to_total(self, data_json_data):
         total = data_json_data["total"]
@@ -175,7 +173,7 @@ class TestDataJsonStructure:
 
 class TestDataJsonEntries:
     _REQUIRED_FIELDS = {
-        "bfs",
+        "id",
         "name",
         "domain",
         "mx",
@@ -196,13 +194,11 @@ class TestDataJsonEntries:
             ),
         )
 
-    def test_bfs_key_matches_entry(self, data_json_data):
+    def test_id_key_matches_entry(self, data_json_data):
         entries = data_json_data["municipalities"]
         _collect_failures(
             entries,
-            lambda k, e: (
-                f"key={k} but bfs={e.get('bfs')}" if k != e.get("bfs") else None
-            ),
+            lambda k, e: f"key={k} but id={e.get('id')}" if k != e.get("id") else None,
         )
 
     def test_provider_valid(self, data_json_data):
@@ -266,11 +262,11 @@ class TestDataJsonEntries:
             lambda k, e: f"{k}: empty name" if not e.get("name") else None,
         )
 
-    def test_bfs_is_numeric(self, data_json_data):
+    def test_id_is_numeric(self, data_json_data):
         entries = data_json_data["municipalities"]
         _collect_failures(
             entries,
-            lambda k, e: f"{k}: non-numeric BFS" if not k.isdigit() else None,
+            lambda k, e: f"{k}: non-numeric id" if not k.isdigit() else None,
         )
 
 
@@ -346,13 +342,13 @@ class TestDataJsonAggregates:
 
 
 class TestCrossFileConsistency:
-    def test_same_bfs_keys(self, municipality_domains_data, data_json_data):
+    def test_same_id_keys(self, municipality_domains_data, data_json_data):
         md_keys = set(municipality_domains_data["municipalities"].keys())
         dj_keys = set(data_json_data["municipalities"].keys())
         only_md = md_keys - dj_keys
         only_dj = dj_keys - md_keys
         assert not only_md and not only_dj, (
-            f"BFS mismatch: {len(only_md)} only in municipality_domains, "
+            f"id mismatch: {len(only_md)} only in municipality_domains, "
             f"{len(only_dj)} only in data.json"
         )
 
@@ -361,11 +357,11 @@ class TestCrossFileConsistency:
         dj = data_json_data["municipalities"]
         common = set(md.keys()) & set(dj.keys())
         failures = []
-        for bfs in common:
-            md_name = md[bfs].get("name")
-            dj_name = dj[bfs].get("name")
+        for id in common:
+            md_name = md[id].get("name")
+            dj_name = dj[id].get("name")
             if md_name != dj_name:
-                failures.append(f"{bfs}: '{md_name}' vs '{dj_name}'")
+                failures.append(f"{id}: '{md_name}' vs '{dj_name}'")
         if failures:
             shown = failures[:10]
             summary = "\n".join(shown)
@@ -378,11 +374,11 @@ class TestCrossFileConsistency:
         dj = data_json_data["municipalities"]
         common = set(md.keys()) & set(dj.keys())
         failures = []
-        for bfs in common:
-            md_domain = md[bfs].get("domain", "")
-            dj_domain = dj[bfs].get("domain", "")
+        for id in common:
+            md_domain = md[id].get("domain", "")
+            dj_domain = dj[id].get("domain", "")
             if md_domain != dj_domain:
-                failures.append(f"{bfs}: '{md_domain}' vs '{dj_domain}'")
+                failures.append(f"{id}: '{md_domain}' vs '{dj_domain}'")
         if failures:
             shown = failures[:10]
             summary = "\n".join(shown)
@@ -395,11 +391,11 @@ class TestCrossFileConsistency:
         dj = data_json_data["municipalities"]
         common = set(md.keys()) & set(dj.keys())
         failures = []
-        for bfs in common:
-            md_flags = md[bfs].get("flags", [])
-            dj_flags = dj[bfs].get("resolve_flags", [])
+        for id in common:
+            md_flags = md[id].get("flags", [])
+            dj_flags = dj[id].get("resolve_flags", [])
             if md_flags and not dj_flags:
-                failures.append(f"{bfs}: resolver flags {md_flags} not in data.json")
+                failures.append(f"{id}: resolver flags {md_flags} not in data.json")
         if failures:
             shown = failures[:10]
             summary = "\n".join(shown)
