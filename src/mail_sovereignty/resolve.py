@@ -1,22 +1,24 @@
 import asyncio
+import csv
 import json
 import re
 import ssl
 import time
+import unicodedata
 import warnings
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
+from collections import Counter
 
 import httpx
 import stamina
 from loguru import logger
 
-from mail_sovereignty.bfs_api import fetch_bfs_municipalities
 from mail_sovereignty.constants import (
-    CANTON_ABBREVIATIONS,
     CONCURRENCY_POSTPROCESS,
     EMAIL_RE,
+    SOURCE_KEYS,
     SKIP_DOMAINS,
     SPARQL_QUERY,
     SPARQL_URL,
@@ -37,118 +39,45 @@ def url_to_domain(url: str | None) -> str | None:
     return host if host else None
 
 
-def _slugify_name(name: str) -> set[str]:
-    """Generate slug variants for a municipality name (umlaut/accent handling)."""
-    raw = name.lower().strip()
-    raw = re.sub(r"\s*\(.*?\)\s*", "", raw)
+def _normalize_name(name: str) -> str:
+    """Normalize a municipality name for comparison."""
 
-    # German umlaut transliteration
-    de = raw.replace("\u00fc", "ue").replace("\u00e4", "ae").replace("\u00f6", "oe")
-    # French accent removal
-    fr = raw
-    for a, b in [
-        ("\u00e9", "e"),
-        ("\u00e8", "e"),
-        ("\u00ea", "e"),
-        ("\u00eb", "e"),
-        ("\u00e0", "a"),
-        ("\u00e2", "a"),
-        ("\u00f4", "o"),
-        ("\u00ee", "i"),
-        ("\u00f9", "u"),
-        ("\u00fb", "u"),
-        ("\u00e7", "c"),
-        ("\u00ef", "i"),
-    ]:
-        fr = fr.replace(a, b)
+    normalized = unicodedata.normalize("NFD", name)
 
-    def slugify(s):
-        s = re.sub(r"['\u2019`]", "", s)
-        s = re.sub(r"[^a-z0-9]+", "-", s)
-        return s.strip("-")
+    # Filter out the accent marks (combining characters)
+    ascii_bytes = normalized.encode("ASCII", "ignore")
 
-    return {slugify(de), slugify(fr), slugify(raw)} - {""}
+    # Decode back to string and lowercase it
+    return ascii_bytes.decode("ASCII").lower().strip()
 
 
-def guess_domains(name: str, canton: str = "") -> list[str]:
+def _slugify(s):
+    """Convert a pre-normalised string to a URL-safe slug."""
+    s = re.sub(r"['\u2019`]", "", s)
+    s = re.sub(r"[^a-z0-9]+", "-", s)
+
+    return s.strip("-")
+
+
+def guess_domains(name: str) -> list[str]:
     """Generate a set of plausible domain guesses for a municipality."""
 
-    def _slugs_for(text: str) -> set[str]:
-        raw = text.lower().strip()
-        raw = re.sub(r"\s*\(.*?\)\s*", "", raw)
-
-        de = raw.replace("\u00fc", "ue").replace("\u00e4", "ae").replace("\u00f6", "oe")
-        fr = raw
-        for a, b in [
-            ("\u00e9", "e"),
-            ("\u00e8", "e"),
-            ("\u00ea", "e"),
-            ("\u00eb", "e"),
-            ("\u00e0", "a"),
-            ("\u00e2", "a"),
-            ("\u00f4", "o"),
-            ("\u00ee", "i"),
-            ("\u00f9", "u"),
-            ("\u00fb", "u"),
-            ("\u00e7", "c"),
-            ("\u00ef", "i"),
-        ]:
-            fr = fr.replace(a, b)
-
-        def slugify(s):
-            s = re.sub(r"['\u2019`]", "", s)
-            s = re.sub(r"[^a-z0-9]+", "-", s)
-            return s.strip("-")
-
-        slugs = {slugify(de), slugify(fr), slugify(raw)} - {""}
-
-        # Compound name handling: join all words
-        # e.g. "Rüti bei Lyssach" -> "ruetibeilyssach.ch"
-        extras = set()
-        for variant in [de, fr, raw]:
-            joined = slugify(variant).replace("-", "")
-            if joined and joined not in slugs:
-                extras.add(joined)
-
-        return slugs, extras
-
-    # Split on "/" to generate guesses for each part independently
-    parts = [p.strip() for p in name.split("/") if p.strip()]
-
-    all_slugs: set[str] = set()
-    all_extras: set[str] = set()
-
-    # Always generate from the full name
-    slugs, extras = _slugs_for(name)
-    all_slugs |= slugs
-    all_extras |= extras
-
-    # Also generate from each "/" part individually
-    if len(parts) > 1:
-        for part in parts:
-            slugs, extras = _slugs_for(part)
-            all_slugs |= slugs
-            all_extras |= extras
+    ascii_name = _normalize_name(name)
+    slugs = {_slugify(ascii_name)} - {""}
 
     candidates = set()
-    canton_abbrev = CANTON_ABBREVIATIONS.get(canton, "")
-
-    for slug in all_slugs:
-        candidates.add(f"{slug}.ch")
-        candidates.add(f"gemeinde-{slug}.ch")
-        candidates.add(f"commune-de-{slug}.ch")
-        candidates.add(f"comune-di-{slug}.ch")
-        candidates.add(f"stadt-{slug}.ch")
-        if canton_abbrev:
-            candidates.add(f"{slug}.{canton_abbrev}.ch")
-
-    for joined in all_extras:
-        candidates.add(f"{joined}.ch")
+    suffixes = ["kozseg", "nagykozseg", "varos", "falu", "onkormanyzat"]
+    for slug in slugs:
+        candidates.add(f"{slug}.hu")
+        candidates.add(f"{slug}.asp.lgov.hu")
+        for suffix in suffixes:
+            candidates.add(f"{slug}{suffix}.hu")
+            candidates.add(f"{slug}-{suffix}.hu")
 
     return sorted(candidates)
 
 
-def detect_website_mismatch(name: str, website_domain: str) -> bool:
+def detect_mismatch(name: str, website_domain: str) -> bool:
     """Detect if a website domain doesn't match the municipality name.
 
     Returns True if the domain appears unrelated to the municipality name.
@@ -157,135 +86,32 @@ def detect_website_mismatch(name: str, website_domain: str) -> bool:
         return False
 
     domain_lower = website_domain.lower()
-    slugs = _slugify_name(name)
+    if domain_lower.startswith("www."):
+        domain_lower = domain_lower[4:]
 
-    # Handle common prefixes
-    prefixes = ["stadt-", "gemeinde-", "commune-de-", "comune-di-"]
-    domain_stripped = domain_lower
-    for prefix in prefixes:
-        if domain_stripped.startswith(prefix):
-            domain_stripped = domain_stripped[len(prefix) :]
-            break
-
-    # Remove TLD for matching
+    ascii_name = _normalize_name(name)
+    slugs = {_slugify(ascii_name)} - {""}
     domain_base = (
-        domain_stripped.rsplit(".", 1)[0] if "." in domain_stripped else domain_stripped
+        domain_lower.rsplit(".", 1)[0] if "." in domain_lower else domain_lower
     )
-    # Strip canton subdomain: e.g. teufen.ar.ch -> teufen
-    parts = domain_base.split(".")
-    domain_base_first = parts[0] if parts else domain_base
+    domain_labels = [label for label in domain_base.split(".") if label]
+    domain_label_slugs = {_slugify(label) for label in domain_labels} - {""}
+    domain_compact = _slugify(domain_base).replace("-", "")
 
     for slug in slugs:
         if slug in domain_lower:
             return False
-        if slug in domain_stripped:
+        if slug in domain_label_slugs:
             return False
-        if slug == domain_base_first:
+        if slug.replace("-", "") and slug.replace("-", "") in domain_compact:
             return False
 
-    # Check if any word from the name (4+ chars) appears in the domain
-    raw = name.lower().strip()
-    raw = re.sub(r"\s*\(.*?\)\s*", "", raw)
-    de = raw.replace("\u00fc", "ue").replace("\u00e4", "ae").replace("\u00f6", "oe")
-    fr = raw
-    for a, b in [
-        ("\u00e9", "e"),
-        ("\u00e8", "e"),
-        ("\u00ea", "e"),
-        ("\u00eb", "e"),
-        ("\u00e0", "a"),
-        ("\u00e2", "a"),
-        ("\u00f4", "o"),
-        ("\u00ee", "i"),
-        ("\u00f9", "u"),
-        ("\u00fb", "u"),
-        ("\u00e7", "c"),
-        ("\u00ef", "i"),
-    ]:
-        fr = fr.replace(a, b)
-
-    for variant in [raw, de, fr]:
-        words = re.findall(r"[a-z]{4,}", variant)
-        for word in words:
-            if word in domain_lower:
-                return False
+    words = re.findall(r"[a-z]{4,}", ascii_name)
+    for word in words:
+        if word in domain_compact:
+            return False
 
     return True
-
-
-def score_domain_sources(
-    sources: dict[str, set[str]],
-    name: str,
-    website_domain: str,
-) -> dict[str, Any]:
-    """Score domain sources and pick best domain based on agreement."""
-    sources_detail: dict[str, list[str]] = {k: sorted(v) for k, v in sources.items()}
-
-    # Collect all unique domains and which sources found them
-    domain_sources: dict[str, list[str]] = {}
-    for source_name, domains in sources.items():
-        for domain in domains:
-            if domain not in domain_sources:
-                domain_sources[domain] = []
-            domain_sources[domain].append(source_name)
-
-    if not domain_sources:
-        return {
-            "domain": "",
-            "source": "none",
-            "confidence": "none",
-            "sources_detail": sources_detail,
-            "flags": [],
-        }
-
-    # Pick domain with most source agreement
-    best_domain = max(
-        domain_sources,
-        key=lambda d: (len(domain_sources[d]), "scrape" in domain_sources[d]),
-    )
-    best_sources = domain_sources[best_domain]
-    source_count = len(best_sources)
-
-    # Determine primary source (in priority order)
-    source_priority = ["scrape", "redirect", "wikidata", "guess"]
-    source = next((s for s in source_priority if s in best_sources), best_sources[0])
-
-    flags: list[str] = []
-
-    # Determine confidence
-    if source_count >= 2:
-        confidence = "high"
-    elif source == "guess":
-        confidence = "low"
-        flags.append("guess_only")
-    else:
-        confidence = "medium"
-
-    # Check for disagreement: only flag when a primary source found domains
-    # but none match the best domain. Extra domains from guess or within scrape
-    # don't count as disagreement.
-    primary_sources = ["scrape", "redirect", "wikidata"]
-    for src in primary_sources:
-        src_domains = sources.get(src, set())
-        if src_domains and best_domain not in src_domains:
-            flags.append("sources_disagree")
-            if confidence == "high":
-                confidence = "medium"
-            break
-
-    # Check website mismatch
-    if website_domain and detect_website_mismatch(name, website_domain):
-        flags.append("website_mismatch")
-        if confidence == "high":
-            confidence = "medium"
-
-    return {
-        "domain": best_domain,
-        "source": source,
-        "confidence": confidence,
-        "sources_detail": sources_detail,
-        "flags": flags,
-    }
 
 
 @stamina.retry(
@@ -302,7 +128,7 @@ async def _fetch_sparql(
 
 
 async def fetch_wikidata() -> dict[str, dict[str, str]]:
-    """Query Wikidata for all Swiss municipalities."""
+    """Query Wikidata for all Hungarian municipalities."""
     logger.info("Fetching municipalities from Wikidata")
     headers = {
         "Accept": "application/sparql-results+json",
@@ -314,20 +140,29 @@ async def fetch_wikidata() -> dict[str, dict[str, str]]:
 
     municipalities = {}
     for row in data["results"]["bindings"]:
-        bfs = row["bfs"]["value"]
-        name = row.get("itemLabel", {}).get("value", f"BFS-{bfs}")
-        website = row.get("website", {}).get("value", "")
-        canton = row.get("cantonLabel", {}).get("value", "")
+        raw_id = row.get("id", {}).get("value", "").strip()
+        if not raw_id:
+            continue
 
-        if bfs not in municipalities:
-            municipalities[bfs] = {
-                "bfs": bfs,
+        id = raw_id.zfill(5) if raw_id.isdigit() else raw_id
+        name = row.get("itemLabel", {}).get("value", f"ID-{id}")
+        website = row.get("website", {}).get("value", "")
+        county = row.get("countyLabel", {}).get("value", "")
+
+        if id not in municipalities:
+            municipalities[id] = {
+                "id": id,
                 "name": name,
                 "website": website,
-                "canton": canton,
+                "county": county,
             }
-        elif not municipalities[bfs]["website"] and website:
-            municipalities[bfs]["website"] = website
+        else:
+            if not municipalities[id]["website"] and website:
+                municipalities[id]["website"] = website
+            if not municipalities[id]["county"] and county:
+                municipalities[id]["county"] = county
+            if not municipalities[id]["name"] and name:
+                municipalities[id]["name"] = name
 
     logger.info(
         "Wikidata: {} municipalities, {} with websites",
@@ -343,6 +178,33 @@ def load_overrides(overrides_path: Path) -> dict[str, dict[str, str]]:
         return {}
     with open(overrides_path, encoding="utf-8") as f:
         return json.load(f)
+
+
+def load_municipalities_csv(csv_path: Path) -> dict[str, dict[str, str]]:
+    """Load the municipalities CSV and normalize it to the resolver schema."""
+    municipalities: dict[str, dict[str, str]] = {}
+    with open(csv_path, encoding="utf-8-sig", newline="") as f:
+        reader = csv.reader(f)
+        next(reader, None)
+        for row in reader:
+            if not row:
+                continue
+
+            # The source file stores each CSV line as a single quoted field.
+            parts = row[0].split(",", 2) if len(row) == 1 else row
+            if len(parts) != 3:
+                continue
+
+            name, id, county = (part.strip() for part in parts)
+            if not id or not name:
+                continue
+
+            municipalities[id] = {
+                "id": id,
+                "name": name,
+                "county": county,
+            }
+    return municipalities
 
 
 def decrypt_typo3(encoded: str, offset: int = 2) -> str:
@@ -380,49 +242,52 @@ def _is_valid_domain(domain: str) -> bool:
     return all(0 < len(label) <= 63 for label in domain.split("."))
 
 
-def extract_email_domains(html: str) -> set[str]:
-    """Extract email domains from HTML, including TYPO3-obfuscated emails."""
-    domains = set()
+def _is_skip_domain(domain: str) -> bool:
+    domain = domain.lower().removeprefix("www.").rstrip(".")
 
-    # simple @ in body
+    return domain in SKIP_DOMAINS or any(
+        domain.endswith("." + suffix) for suffix in SKIP_DOMAINS
+    )
+
+
+def extract_email_domain_counts(html: str) -> Counter[str]:
+    """Count email domains found in HTML, including TYPO3-obfuscated emails."""
+    counts: Counter[str] = Counter()
+
     for email in EMAIL_RE.findall(html):
         domain = email.split("@")[1].lower()
-        if domain not in SKIP_DOMAINS:
-            domains.add(domain)
+        if not _is_skip_domain(domain) and _is_valid_domain(domain):
+            counts[domain] += 1
 
-    # mailto:
     for email in re.findall(r'mailto:([^">\s?]+)', html):
         if "@" in email:
             domain = email.split("@")[1].lower().rstrip("\\/.")
-            if domain not in SKIP_DOMAINS:
-                domains.add(domain)
+            if not _is_skip_domain(domain) and _is_valid_domain(domain):
+                counts[domain] += 1
 
-    # typo3 obfuscated emails
     for encoded in TYPO3_RE.findall(html):
         for offset in range(-25, 26):
-            decoded = decrypt_typo3(encoded, offset)
-            decoded = decoded.replace("mailto:", "")
+            decoded = decrypt_typo3(encoded, offset).replace("mailto:", "")
             if "@" in decoded and EMAIL_RE.search(decoded):
                 domain = decoded.split("@")[1].lower()
-                if domain not in SKIP_DOMAINS:
-                    domains.add(domain)
+                if not _is_skip_domain(domain) and _is_valid_domain(domain):
+                    counts[domain] += 1
                 break
 
-    # user(at)domain.ch and user[at]domain.ch variants
     for match in re.findall(
         r"[\w.-]+\s*[\[(]at[\])]\s*[\w.-]+\.\w+", html, re.IGNORECASE
     ):
         normalized = re.sub(r"\s*[\[(]at[\])]\s*", "@", match, flags=re.IGNORECASE)
         if "@" in normalized:
             domain = normalized.split("@")[1].lower()
-            if domain not in SKIP_DOMAINS:
-                domains.add(domain)
+            if not _is_skip_domain(domain) and _is_valid_domain(domain):
+                counts[domain] += 1
 
-    return {d for d in domains if _is_valid_domain(d)}
+    return counts
 
 
 def build_urls(domain: str) -> list[str]:
-    """Build candidate URLs to scrape, trying www. prefix first."""
+    """Build candidate base URLs to try in priority order (no subpages)."""
     domain = domain.strip()
     if domain.startswith(("http://", "https://")):
         parsed = urlparse(domain)
@@ -432,23 +297,28 @@ def build_urls(domain: str) -> list[str]:
     else:
         bare = domain
 
-    bases = [f"https://www.{bare}", f"https://{bare}"]
-    urls = []
-    for base in bases:
-        urls.append(base + "/")
-        for path in SUBPAGES:
-            urls.append(base + path)
-    return urls
+    return [
+        f"https://www.{bare}",
+        f"https://{bare}",
+        f"http://www.{bare}",  # villages hidden away behind God's back
+        f"http://{bare}",
+    ]
 
 
 def _is_ssl_error(exc: BaseException) -> bool:
     """Check if an exception (or any in its chain) is an SSL verification error."""
     current: BaseException | None = exc
     while current is not None:
-        if isinstance(current, ssl.SSLCertVerificationError):
+        if isinstance(current, ssl.SSLError):
             return True
-        # Some builds wrap the error as a string only
-        if "CERTIFICATE_VERIFY_FAILED" in str(current):
+        if any(
+            s in str(current)
+            for s in (
+                "CERTIFICATE_VERIFY_FAILED",
+                "TLSV1_ALERT",
+                "SSL_ERROR",
+            )
+        ):
             return True
         current = current.__cause__ if current.__cause__ is not current else None
     return False
@@ -463,209 +333,468 @@ async def _fetch_insecure(url: str) -> httpx.Response:
 
 
 def _process_scrape_response(
-    r: httpx.Response,
+    response: httpx.Response,
     domain: str,
-    all_domains: set[str],
+    all_domains: Counter[str],
     redirect_domain: str | None,
-) -> tuple[set[str], str | None]:
-    """Extract emails and detect redirects from a scrape response.
-
-    Mutates all_domains in place. Returns updated (all_domains, redirect_domain).
-    """
-    if r.status_code != 200:
+) -> tuple[Counter[str], str | None]:
+    """Extract emails and detect redirects from a scrape response."""
+    if response.status_code != 200:
         return all_domains, redirect_domain
 
     if redirect_domain is None:
-        final_domain = url_to_domain(str(r.url))
+        final_domain = url_to_domain(str(response.url))
         if final_domain and final_domain != domain:
             redirect_domain = final_domain
             logger.info("Redirect detected: {} -> {}", domain, redirect_domain)
 
-    domains = extract_email_domains(r.text)
-    all_domains |= domains
+    all_domains.update(extract_email_domain_counts(response.text))
     return all_domains, redirect_domain
+
+
+async def _try_fetch(client: httpx.AsyncClient, url: str) -> httpx.Response | None:
+    """Fetch a single URL, returning None on any network error."""
+    try:
+        return await client.get(url, follow_redirects=True, timeout=15)
+    except httpx.ConnectError as exc:
+        if _is_ssl_error(exc):
+            logger.info("SSL error on {}, retrying without verification", url)
+            try:
+                return await _fetch_insecure(url)
+            except Exception as retry_exc:
+                logger.debug("Insecure retry {} failed: {}", url, retry_exc)
+                return None
+        logger.debug("Scrape {} failed: {}", url, exc)
+        return None
+    except Exception as exc:
+        logger.debug("Scrape {} failed: {}", url, exc)
+        return None
 
 
 async def scrape_email_domains(
     client: httpx.AsyncClient, domain: str
-) -> tuple[set[str], str | None]:
+) -> tuple[Counter[str], str | None]:
     """Scrape a municipality website for email domains.
 
-    Returns:
-        Tuple of (email_domains_found, redirect_target_domain_or_None).
-        redirect_target_domain is set when the website redirects to a
-        different domain (ignoring www prefix differences).
+    Tries each base URL (https://www., https://, http://www., http://) in order.
+    If the root of a base returns 200, scrapes all subpages for that base and stops.
+    If the root fails or returns non-200, moves to the next base.
     """
     if not domain:
-        return set(), None
+        return Counter(), None
 
-    all_domains = set()
+    all_domains: Counter[str] = Counter()
     redirect_domain: str | None = None
-    urls = build_urls(domain)
 
-    for url in urls:
-        try:
-            r = await client.get(url, follow_redirects=True, timeout=15)
-        except httpx.ConnectError as exc:
-            if _is_ssl_error(exc):
-                logger.info("SSL error on {}, retrying without verification", url)
-                try:
-                    r = await _fetch_insecure(url)
-                except Exception as retry_exc:
-                    logger.debug("Insecure retry {} failed: {}", url, retry_exc)
-                    continue
-            else:
-                logger.debug("Scrape {} failed: {}", url, exc)
-                continue
-        except Exception as exc:
-            logger.debug("Scrape {} failed: {}", url, exc)
+    for base in build_urls(domain):
+        root = await _try_fetch(client, base + "/")
+        if root is None or root.status_code != 200:
             continue
 
         all_domains, redirect_domain = _process_scrape_response(
-            r, domain, all_domains, redirect_domain
+            root, domain, all_domains, redirect_domain
         )
-        if all_domains:
-            return all_domains, redirect_domain
+        for path in SUBPAGES:
+            response = await _try_fetch(client, base + path)
+            if response is not None:
+                all_domains, redirect_domain = _process_scrape_response(
+                    response, domain, all_domains, redirect_domain
+                )
+        break
 
     return all_domains, redirect_domain
 
 
+async def _collect_website_source_candidates(
+    client: httpx.AsyncClient,
+    website_domain: str | None,
+) -> tuple[str | None, Counter[str], Counter[str]]:
+    """Collect website-domain, scrape candidates, and redirect candidates."""
+    scrape_counts: Counter[str] = Counter()
+    redirect_counts: Counter[str] = Counter()
+
+    if not website_domain:
+        return None, scrape_counts, redirect_counts
+
+    website_domains, redirect_domain = await scrape_email_domains(
+        client, website_domain
+    )
+
+    candidates = website_domains.most_common()
+    mx_results = await asyncio.gather(*[lookup_mx(d) for d, _ in candidates])
+    for (domain, count), mx in zip(candidates, mx_results):
+        if mx:
+            scrape_counts[domain] += count
+
+    if redirect_domain:
+        if await lookup_mx(redirect_domain):
+            redirect_counts[redirect_domain] += 1
+
+    return website_domain, scrape_counts, redirect_counts
+
+
+def _add_scrape_candidates(
+    *,
+    sources: dict[str, set[str]],
+    scrape_counts: Counter[str],
+    source_key: str,
+    name: str,
+    evidence: Counter[str] | None = None,
+) -> None:
+    for email_domain, count in scrape_counts.most_common():
+        if detect_mismatch(name, email_domain):
+            logger.debug(
+                "Filtered mismatching {} candidate for {}: {}",
+                source_key,
+                name,
+                email_domain,
+            )
+            continue
+        sources[source_key].add(email_domain)
+        if evidence is not None:
+            evidence[email_domain] += count
+
+
+def _add_redirect_candidates(
+    *,
+    sources: dict[str, set[str]],
+    redirect_counts: Counter[str],
+    source_key: str,
+    name: str,
+) -> None:
+    for redirect_domain, _count in redirect_counts.most_common():
+        if _is_skip_domain(redirect_domain):
+            logger.debug(
+                "Filtered skipped redirect candidate for {}: {}",
+                name,
+                redirect_domain,
+            )
+            continue
+        if detect_mismatch(name, redirect_domain):
+            logger.debug(
+                "Filtered mismatching {} candidate for {}: {}",
+                source_key,
+                name,
+                redirect_domain,
+            )
+            continue
+        sources[source_key].add(redirect_domain)
+
+
+def _agreed(
+    pools: list[set[str]], evidence: Counter[str], min_count: int = 2
+) -> str | None:
+    """Return the best domain present in min_count+ of the given pools, or None.
+
+    No family grouping — each pool is counted independently.
+    Tiebreak: highest evidence count, then alphabetical.
+    When min_count=1, returns the best domain across all non-empty pools (used in fallback).
+    """
+    all_domains: set[str] = set().union(*pools)
+    candidates = {
+        d for d in all_domains if sum(1 for p in pools if d in p) >= min_count
+    }
+    if not candidates:
+        return None
+    return min(candidates, key=lambda d: (-evidence[d], d))
+
+
 async def resolve_municipality_domain(
-    m: dict[str, str],
+    municipality: dict[str, str],
     overrides: dict[str, dict[str, str]],
     client: httpx.AsyncClient,
 ) -> dict[str, Any]:
-    """Resolve a municipality's email domain using multiple sources.
+    id = municipality["id"]
+    name = municipality["name"]
+    county = municipality.get("county", "")
 
-    1. Override -> immediate win, confidence: high
-    2. Collect from scrape, wikidata, guess sources
-    3. Score agreement to pick best domain
-    """
-    bfs = m["bfs"]
-    name = m["name"]
-    canton = m.get("canton", "")
+    entry: dict[str, Any] = {"id": id, "name": name, "county": county}
+    sources: dict[str, set[str]] = {key: set() for key in SOURCE_KEYS}
+    domain_evidence: Counter[str] = Counter()
+    website_candidate_cache: dict[
+        str, tuple[str | None, Counter[str], Counter[str]]
+    ] = {}
 
-    entry: dict[str, Any] = {
-        "bfs": bfs,
-        "name": name,
-        "canton": canton,
-    }
+    async def _get_cached(
+        website_value: str | None,
+    ) -> tuple[str | None, Counter[str], Counter[str]]:
+        website_domain = url_to_domain(website_value)
+        if not website_domain:
+            return None, Counter(), Counter()
+        if website_domain not in website_candidate_cache:
+            website_candidate_cache[
+                website_domain
+            ] = await _collect_website_source_candidates(client, website_domain)
+        cached_domain, cached_sc, cached_rc = website_candidate_cache[website_domain]
+        return cached_domain, Counter(cached_sc), Counter(cached_rc)
 
-    # 1. Check overrides (immediate win)
-    if bfs in overrides:
-        override = overrides[bfs]
-        domain = override["domain"]
-        mx = await lookup_mx(domain) if domain else []
-        entry["domain"] = domain
-        entry["source"] = "override"
-        entry["confidence"] = "high" if (mx or not domain) else "medium"
-        entry["sources_detail"] = {"override": [domain] if domain else []}
-        entry["flags"] = []
+    def _downgrade(confidence: str) -> str:
+        return {"high": "medium", "medium": "low", "low": "low", "none": "none"}[
+            confidence
+        ]
+
+    def _make_result(
+        domain: str, source: str, confidence: str, flags: list[str]
+    ) -> dict[str, Any]:
+        final_flags = list(flags)
+        final_confidence = confidence
+        if domain and source != "override":
+            if detect_mismatch(name, domain):
+                final_flags.append("domain_mismatch")
+                final_confidence = _downgrade(final_confidence)
+            if domain.endswith(".asp.lgov.hu"):
+                final_flags.append("lgov_platform")
+                final_confidence = _downgrade(final_confidence)
+        if municipality.get("id_only"):
+            final_flags.append("id_only")
+        entry.update(
+            {
+                "domain": domain,
+                "source": source,
+                "confidence": final_confidence,
+                "sources_detail": {k: sorted(v) for k, v in sources.items()},
+                "flags": final_flags,
+            }
+        )
         return entry
 
-    # 2. Collect from multiple sources
-    website_domain = url_to_domain(m.get("website", ""))
-    sources: dict[str, set[str]] = {
-        "scrape": set(),
-        "redirect": set(),
-        "wikidata": set(),
-        "guess": set(),
-    }
+    # ── Step 1: Override ──────────────────────────────────────────────────────
+    override = overrides.get(id, {})
+    override_domain = url_to_domain(override.get("domain"))
+    override_website = url_to_domain(override.get("website"))
 
-    # Scrape website for email addresses
-    if website_domain:
-        email_domains, redirect_domain = await scrape_email_domains(
-            client, website_domain
+    if override_domain and await lookup_mx(override_domain):
+        sources["override"].add(override_domain)
+        return _make_result(override_domain, "override", "high", [])
+
+    if (
+        override_website
+        and override_website != override_domain
+        and await lookup_mx(override_website)
+    ):
+        sources["override"].add(override_website)
+        return _make_result(override_website, "override", "high", [])
+
+    if override_website:
+        _, sc, rc = await _get_cached(override_website)
+        _add_scrape_candidates(
+            sources=sources,
+            scrape_counts=sc,
+            source_key="override_scrape",
+            name=name,
+            evidence=domain_evidence,
         )
-        for email_domain in email_domains:
-            mx = await lookup_mx(email_domain)
-            if mx:
-                sources["scrape"].add(email_domain)
+        _add_redirect_candidates(
+            sources=sources,
+            redirect_counts=rc,
+            source_key="override_redirect",
+            name=name,
+        )
 
-        # Add redirect target as a source (if it has MX records)
-        if redirect_domain:
-            mx = await lookup_mx(redirect_domain)
-            if mx:
-                sources["redirect"].add(redirect_domain)
+    # ── Step 2: Wikidata ──────────────────────────────────────────────────────
+    website_wd = municipality.get("website", "")
+    wd_domain, wd_sc, wd_rc = await _get_cached(website_wd)
 
-    # Wikidata website domain
-    if website_domain:
-        mx = await lookup_mx(website_domain)
-        if mx:
-            sources["wikidata"].add(website_domain)
+    if (
+        wd_domain
+        and not _is_skip_domain(wd_domain)
+        and not detect_mismatch(name, wd_domain)
+        and await lookup_mx(wd_domain)
+    ):
+        sources["wikidata"].add(wd_domain)
 
-    # Guess domains
-    for guess in guess_domains(name, canton):
-        mx = await lookup_mx(guess)
-        if mx:
+    _add_scrape_candidates(
+        sources=sources,
+        scrape_counts=wd_sc,
+        source_key="wikidata_scrape",
+        name=name,
+        evidence=domain_evidence,
+    )
+    _add_redirect_candidates(
+        sources=sources,
+        redirect_counts=wd_rc,
+        source_key="wikidata_redirect",
+        name=name,
+    )
+
+    # ── Step 3: Guess — MX phase ──────────────────────────────────────────────
+    guesses: list[str] = []
+    for guess in guess_domains(name):
+        if _is_skip_domain(guess):
+            logger.debug("Filtered skipped guess candidate for {}: {}", name, guess)
+            continue
+        guesses.append(guess)
+        if await lookup_mx(guess):
             sources["guess"].add(guess)
 
-    # 3. Score and pick best
-    result = score_domain_sources(sources, name, website_domain or "")
-    entry.update(result)
+    # ── Step 4: Agreement check (before guess scrape) ─────────────────────────
+    domain = _agreed(
+        [
+            sources["override_scrape"],
+            sources["override_redirect"],
+            sources["wikidata"],
+            sources["wikidata_scrape"],
+            sources["wikidata_redirect"],
+            sources["guess"],
+        ],
+        domain_evidence,
+    )
+    if domain:
+        return _make_result(domain, "source_agreement", "high", [])
 
-    # Add bfs_only flag if applicable
-    if m.get("bfs_only"):
-        entry.setdefault("flags", []).append("bfs_only")
+    # ── Step 5: Guess — scrape phase ─────────────────────────────────────────
+    for guess in guesses:
+        _, sc, rc = await _get_cached(guess)
+        _add_scrape_candidates(
+            sources=sources,
+            scrape_counts=sc,
+            source_key="guess_scrape",
+            name=name,
+            evidence=domain_evidence,
+        )
+        _add_redirect_candidates(
+            sources=sources,
+            redirect_counts=rc,
+            source_key="guess_redirect",
+            name=name,
+        )
 
-    return entry
+    guess_family = (
+        sources["guess"] | sources["guess_scrape"] | sources["guess_redirect"]
+    )
+    domain = _agreed(
+        [
+            sources["override_scrape"],
+            sources["override_redirect"],
+            sources["wikidata"],
+            sources["wikidata_scrape"],
+            sources["wikidata_redirect"],
+            guess_family,
+        ],
+        domain_evidence,
+    )
+    if domain:
+        return _make_result(domain, "source_agreement", "medium", [])
+
+    # ── Step 6: Priority fallback ─────────────────────────────────────────────
+    # sources_disagree when 2+ trusted sources contributed but couldn't agree;
+    # single_source when only one trusted source had candidates.
+    # Guesses don't count as a trusted party for this flag.
+    trusted = [
+        sources["override_scrape"] | sources["override_redirect"],
+        sources["wikidata"] | sources["wikidata_scrape"] | sources["wikidata_redirect"],
+    ]
+    trusted_with_candidates = [f for f in trusted if f]
+    fallback_flags = (
+        ["sources_disagree"] if len(trusted_with_candidates) >= 2 else ["single_source"]
+    )
+
+    for key, tier_confidence in [
+        ("override_scrape", "medium"),
+        ("override_redirect", "medium"),
+        ("wikidata", "low"),
+        ("wikidata_scrape", "low"),
+        ("wikidata_redirect", "low"),
+        ("guess", "low"),
+        ("guess_scrape", "low"),
+        ("guess_redirect", "low"),
+    ]:
+        if not sources[key]:
+            continue
+        flags = (
+            ["guess_only"]
+            if key.startswith("guess") and not trusted_with_candidates
+            else fallback_flags
+        )
+        winner = _agreed([sources[key]], domain_evidence, min_count=1)
+        return _make_result(winner, key, tier_confidence, flags)
+
+    # ── Step 7: No winner ────────────────────────────────────────────────────
+    return _make_result("", "none", "none", [])
 
 
-async def run(output_path: Path, overrides_path: Path, date: str | None = None) -> None:
+def _add_shared_domain_flags(results: dict[str, dict[str, Any]]) -> None:
+    """Flag domains used by more than one municipality.
+    Mutates results in-place.
+    """
+    domain_to_id: dict[str, list[str]] = {}
+
+    for id, result in results.items():
+        domain = str(result.get("domain", "")).lower().strip().rstrip(".")
+        if not domain:
+            continue
+
+        domain_to_id.setdefault(domain, []).append(id)
+
+    for domain, ids in domain_to_id.items():
+        if len(ids) < 2:
+            continue
+
+        for id in ids:
+            result = results[id]
+            flags = list(result.get("flags", []))
+
+            if "shared_domain" not in flags:
+                flags.append("shared_domain")
+
+            result["flags"] = flags
+
+
+async def run(output_path: Path, overrides_path: Path) -> None:
     overrides = load_overrides(overrides_path)
 
-    # BFS API is the canonical municipality list
-    bfs_municipalities = await fetch_bfs_municipalities(date)
+    municipalities_csv = (
+        Path(__file__).resolve().parents[2] / "data" / "municipalities.csv"
+    )
+    municipalities_base = load_municipalities_csv(municipalities_csv)
 
     # Wikidata provides website URLs
     wikidata = await fetch_wikidata()
 
-    # Merge: for each BFS municipality, attach Wikidata website if available
+    # Merge: for each id municipality, attach Wikidata website if available
     municipalities: dict[str, dict[str, Any]] = {}
-    for bfs, bfs_entry in bfs_municipalities.items():
+    for id, entry in municipalities_base.items():
         entry: dict[str, Any] = {
-            "bfs": bfs,
-            "name": bfs_entry["name"],
-            "canton": bfs_entry["canton"],
+            "id": id,
+            "name": entry["name"],
+            "county": entry["county"],
             "website": "",
         }
-        if bfs in wikidata:
-            entry["website"] = wikidata[bfs].get("website", "")
-        municipalities[bfs] = entry
+        if id in wikidata:
+            entry["website"] = wikidata[id].get("website", "")
+        municipalities[id] = entry
 
-    # Log municipalities in BFS but missing from Wikidata
-    bfs_only = set(bfs_municipalities) - set(wikidata)
-    if bfs_only:
+    # Log municipalities in id but missing from Wikidata
+    id_only = set(municipalities_base) - set(wikidata)
+    if id_only:
         logger.warning(
-            "{} municipalities in BFS but missing from Wikidata", len(bfs_only)
+            "{} municipalities in id but missing from Wikidata", len(id_only)
         )
-        for bfs in sorted(bfs_only, key=int):
-            m = bfs_municipalities[bfs]
-            logger.warning("    {:>5}  {}", bfs, m["name"])
-            municipalities[bfs]["bfs_only"] = True
+        for id in sorted(id_only, key=str):
+            m = municipalities_base[id]
+            logger.warning("    {:>5}  {}", id, m["name"])
+            municipalities[id]["id_only"] = True
 
-    # Log municipalities in Wikidata but not in BFS (potentially dissolved)
-    wikidata_only = set(wikidata) - set(bfs_municipalities)
+    # Log municipalities in Wikidata but not in ID (potentially dissolved)
+    wikidata_only = set(wikidata) - set(municipalities_base)
     if wikidata_only:
         logger.warning(
-            "{} municipalities in Wikidata but missing from BFS", len(wikidata_only)
+            "{} municipalities in Wikidata but missing from ID", len(wikidata_only)
         )
-        for bfs in sorted(wikidata_only, key=int):
-            m = wikidata[bfs]
-            logger.warning("    {:>5}  {}", bfs, m["name"])
+        for id in sorted(wikidata_only, key=str):
+            m = wikidata[id]
+            logger.warning("    {:>5}  {}", id, m["name"])
 
     # Add municipalities that are only in overrides (missing from both)
-    for bfs, override in overrides.items():
-        if bfs not in municipalities and "name" in override:
-            municipalities[bfs] = {
-                "bfs": bfs,
+    for id, override in overrides.items():
+        if id not in municipalities and "name" in override:
+            municipalities[id] = {
+                "id": id,
                 "name": override["name"],
                 "website": "",
-                "canton": override.get("canton", ""),
+                "county": override.get("county", ""),
             }
-            logger.info(
-                "Added override-only municipality: {} {}", bfs, override["name"]
-            )
+            logger.info("Added override-only municipality: {} {}", id, override["name"])
 
     total = len(municipalities)
     logger.info("Resolving email domains for {} municipalities", total)
@@ -680,7 +809,7 @@ async def run(output_path: Path, overrides_path: Path, date: str | None = None) 
             try:
                 return await resolve_municipality_domain(m, overrides, shared_client)
             except Exception:
-                logger.exception("Resolution failed for {} ({})", m["name"], m["bfs"])
+                logger.exception("Resolution failed for {} ({})", m["name"], m["id"])
                 return None
 
     results: dict[str, dict[str, Any]] = {}
@@ -688,7 +817,9 @@ async def run(output_path: Path, overrides_path: Path, date: str | None = None) 
     skipped = 0
 
     async with httpx.AsyncClient(
-        headers={"User-Agent": "mxmap.ch/1.0 (https://github.com/davidhuser/mxmap)"},
+        headers={
+            "User-Agent": "mxmap.hu/1.0 (https://github.com/complexity-science-hub/mxmap-hu)"
+        },
         follow_redirects=True,
     ) as shared_client:
         tasks = [
@@ -701,17 +832,14 @@ async def run(output_path: Path, overrides_path: Path, date: str | None = None) 
             if result is None:
                 skipped += 1
                 continue
-            results[result["bfs"]] = result
+            results[result["id"]] = result
             done += 1
-            counts: dict[str, int] = {}
-            for r in results.values():
-                counts[r["source"]] = counts.get(r["source"], 0) + 1
             logger.info(
                 "[{:>4}/{}] {} ({}): domain={} source={} confidence={}",
                 done,
                 total,
                 result["name"],
-                result["bfs"],
+                result["id"],
                 result.get("domain", ""),
                 result.get("source", ""),
                 result.get("confidence", ""),
@@ -719,6 +847,8 @@ async def run(output_path: Path, overrides_path: Path, date: str | None = None) 
 
     if skipped:
         logger.warning("Skipped {} municipalities due to errors", skipped)
+
+    _add_shared_domain_flags(results)
 
     # Print summary
     source_counts: dict[str, int] = {}
@@ -731,73 +861,97 @@ async def run(output_path: Path, overrides_path: Path, date: str | None = None) 
 
     logger.info("--- Domain resolution: {} municipalities ---", len(results))
     logger.info("By source:")
-    for source in ["override", "wikidata", "scrape", "redirect", "guess", "none"]:
-        logger.info("  {:<12} {:>5}", source, source_counts.get(source, 0))
+    for source in [
+        "override",
+        "source_agreement",
+        "override_scrape",
+        "override_redirect",
+        "wikidata",
+        "wikidata_scrape",
+        "wikidata_redirect",
+        "guess",
+        "guess_scrape",
+        "guess_redirect",
+        "none",
+    ]:
+        logger.info("  {:<20} {:>5}", source, source_counts.get(source, 0))
     logger.info("By confidence:")
     for conf in ["high", "medium", "low", "none"]:
         logger.info("  {:<12} {:>5}", conf, confidence_counts.get(conf, 0))
 
     # Print flagged entries for review (skip overridden — already confirmed)
     unreviewed = {
-        bfs: r for bfs, r in results.items() if bfs not in overrides and r.get("flags")
+        id: r for id, r in results.items() if id not in overrides and r.get("flags")
     }
 
     disagreements = [r for r in unreviewed.values() if "sources_disagree" in r["flags"]]
     if disagreements:
         logger.warning("{} domains with source disagreement:", len(disagreements))
-        for r in sorted(disagreements, key=lambda x: int(x["bfs"])):
+        for r in sorted(disagreements, key=lambda x: str(x["id"])):
             logger.warning(
                 "  {:>5}  {:<30} {:<20} domain={}  sources={}",
-                r["bfs"],
+                r["id"],
                 r["name"],
-                r["canton"],
+                r["county"],
                 r["domain"],
                 r.get("sources_detail", {}),
             )
 
-    mismatches = [r for r in unreviewed.values() if "website_mismatch" in r["flags"]]
+    mismatches = [r for r in unreviewed.values() if "domain_mismatch" in r["flags"]]
     if mismatches:
-        logger.warning("{} domains with website mismatch:", len(mismatches))
-        for r in sorted(mismatches, key=lambda x: int(x["bfs"])):
+        logger.warning("{} domains with domain mismatch:", len(mismatches))
+        for r in sorted(mismatches, key=lambda x: str(x["id"])):
             logger.warning(
                 "  {:>5}  {:<30} {:<20} domain={}",
-                r["bfs"],
+                r["id"],
                 r["name"],
-                r["canton"],
+                r["county"],
                 r["domain"],
             )
 
     guess_only = [r for r in unreviewed.values() if "guess_only" in r["flags"]]
     if guess_only:
         logger.warning("{} domains resolved by guess only:", len(guess_only))
-        for r in sorted(guess_only, key=lambda x: int(x["bfs"])):
+        for r in sorted(guess_only, key=lambda x: str(x["id"])):
             logger.warning(
                 "  {:>5}  {:<30} {:<20} domain={}",
-                r["bfs"],
+                r["id"],
                 r["name"],
-                r["canton"],
+                r["county"],
+                r["domain"],
+            )
+
+    lgov = [r for r in unreviewed.values() if "lgov_platform" in r.get("flags", [])]
+    if lgov:
+        logger.info("{} domains resolved via asp.lgov.hu platform:", len(lgov))
+        for r in sorted(lgov, key=lambda x: str(x["id"])):
+            logger.info(
+                "  {:>5}  {:<30} {:<20} domain={}",
+                r["id"],
+                r["name"],
+                r["county"],
                 r["domain"],
             )
 
     # Print low confidence and unresolved entries for review
     low_entries = [
         r
-        for bfs, r in results.items()
-        if bfs not in overrides and r["confidence"] in ("low", "none")
+        for id, r in results.items()
+        if id not in overrides and r["confidence"] in ("low", "none")
     ]
     if low_entries:
         logger.warning("{} domains needing review:", len(low_entries))
-        for r in sorted(low_entries, key=lambda x: int(x["bfs"])):
+        for r in sorted(low_entries, key=lambda x: str(x["id"])):
             logger.warning(
                 "  {:>5}  {:<30} {:<20} domain={}  source={}",
-                r["bfs"],
+                r["id"],
                 r["name"],
-                r["canton"],
-                r["domain"] or "(none)",
+                r["county"],
+                r["domain"] or "none",
                 r["source"],
             )
 
-    sorted_results = dict(sorted(results.items(), key=lambda kv: int(kv[0])))
+    sorted_results = dict(sorted(results.items(), key=lambda kv: str(kv[0])))
 
     output = {
         "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),

@@ -1,0 +1,170 @@
+{
+    "02088":{
+      "id":"02088",
+      "name":"Mánd",
+      "county":"Szabolcs-Szatmár-Bereg",
+      "website":"https://mandkozseg.webnode.hu/"
+    },
+    "04640": {
+      "id": "04640",
+      "name": "Kám",
+      "county": "Vas",
+      "website": "https://www.kamikozoshiv.hu/"
+    },
+  "09566": {
+    "id": "09566",
+    "name": "Budapest 01. ker.",
+    "county": "Budapest",
+    "website": "http://www.budavar.hu/"
+  },
+  "03179": {
+    "id": "03179",
+    "name": "Budapest 02. ker.",
+    "county": "Budapest",
+    "website": "http://masodikkerulet.hu/"
+  },
+  "18069": {
+    "id": "18069",
+    "name": "Budapest 03. ker.",
+    "county": "Budapest",
+    "website": "https://obuda.hu/"
+  },
+  "05467": {
+    "id": "05467",
+    "name": "Budapest 04. ker.",
+    "county": "Budapest",
+    "website": "https://www.ujpest.hu/"
+  },
+  "13392": {
+    "id": "13392",
+    "name": "Budapest 05. ker.",
+    "county": "Budapest",
+    "website": "https://www.belvaros-lipotvaros.hu/"
+  },
+  "16586": {
+    "id": "16586",
+    "name": "Budapest 06. ker.",
+    "county": "Budapest",
+    "website": "https://www.terezvaros.hu/"
+  },
+  "29744": {
+    "id": "29744",
+    "name": "Budapest 07. ker.",
+    "county": "Budapest",
+    "website": "https://www.erzsebetvaros.hu/"
+  },
+  "25405": {
+    "id": "25405",
+    "name": "Budapest 08. ker.",
+    "county": "Budapest",
+    "website": "https://jozsefvaros.hu/"
+  },
+  "29586": {
+    "id": "29586",
+    "name": "Budapest 09. ker.",
+    "county": "Budapest",
+    "website": "http://www.ferencvaros.hu/"
+  },
+  "10700": {
+    "id": "10700",
+    "name": "Budapest 10. ker.",
+    "county": "Budapest",
+    "website": "https://www.kobanya.hu/"
+  },
+  "14216": {
+    "id": "14216",
+    "name": "Budapest 11. ker.",
+    "county": "Budapest",
+    "website": "https://ujbuda.hu/"
+  },
+  "24697": {
+    "id": "24697",
+    "name": "Budapest 12. ker.",
+    "county": "Budapest",
+    "website": "https://www.hegyvidek.hu/"
+  },
+  "24299": {
+    "id": "24299",
+    "name": "Budapest 13. ker.",
+    "county": "Budapest",
+    "domain": "bp13.hu"
+  },
+  "16337": {
+    "id": "16337",
+    "name": "Budapest 14. ker.",
+    "county": "Budapest",
+    "website": "https://www.zuglo.hu/"
+  },
+  "11314": {
+    "id": "11314",
+    "name": "Budapest 15. ker.",
+    "county": "Budapest",
+    "website": "https://www.bpxv.hu/"
+  },
+  "08208": {
+    "id": "08208",
+    "name": "Budapest 16. ker.",
+    "county": "Budapest",
+    "website": "https://www.bp16.hu/"
+  },
+  "02112": {
+    "id": "02112",
+    "name": "Budapest 17. ker.",
+    "county": "Budapest",
+    "website": "http://rakosmente.hu/"
+  },
+  "29285": {
+    "id": "29285",
+    "name": "Budapest 18. ker.",
+    "county": "Budapest",
+    "website": "https://www.bp18.hu/"
+  },
+  "04011": {
+    "id": "04011",
+    "name": "Budapest 19. ker.",
+    "county": "Budapest",
+    "website": "https://uj.kispest.hu/"
+  },
+  "06026": {
+    "id": "06026",
+    "name": "Budapest 20. ker.",
+    "county": "Budapest",
+    "website": "https://pesterzsebet.hu/"
+  },
+  "13189": {
+    "id": "13189",
+    "name": "Budapest 21. ker.",
+    "county": "Budapest",
+    "website": "https://www.csepel.hu/"
+  },
+  "10214": {
+    "id": "10214",
+    "name": "Budapest 22. ker.",
+    "county": "Budapest",
+    "website": "https://budafokteteny.hu/"
+  },
+  "34139": {
+    "id": "34139",
+    "name": "Budapest 23. ker.",
+    "county": "Budapest",
+    "website": "http://soroksar.hu/"
+  },
+  "18555": {
+      "id": "18555",
+      "name": "Olasz",
+      "county": "Baranya",
+      "website": "olasz.hu"
+  },
+  "23612": {
+      "id": "23612",
+      "name": "Kömörő",
+      "county": "Szabolcs-Szatmár-Bereg",
+      "website": "https://komoro-kozsegi-onkormanyzat.webnode.hu/"
+  },
+  "06673": {
+      "id": "06673",
+      "name": "Ajka",
+      "county": "Veszprém",
+      "domain": "hivatal.ajka.hu"
+  }
+}

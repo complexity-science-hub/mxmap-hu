@@ -8,12 +8,63 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class Provider(str, enum.Enum):
+    # US / global cloud
     MS365 = "ms365"
     GOOGLE = "google"
     AWS = "aws"
-    INFOMANIAK = "infomaniak"
-    SWISS_ISP = "swiss-isp"
+
+    # EU providers
+    FORPSI = "forpsi"
+    WEBSUPPORT = "websupport"
+    ZOHO = "zoho"
+    MIGADU = "migadu"
+    HOSTINGER = "hostinger"
+    VSHOSTING = "vshosting"
+    WEBNODE = "webnode"
+    NETCLASS = "netclass"
+    HOSTNS_IO = "hostns-io"
+
+    # Hungarian providers
+    HUN_ISP = "hungarian-isp"
     INDEPENDENT = "independent"
+    DOTROLL = "dotroll"
+    INTEGRITY = "integrity"
+    MEGACP = "megacp"
+    WEBTAR = "webtar"
+    T_ONLINE = "t-online"
+    ISISCOM = "isiscom"
+    GLOBALNET2000 = "globalnet2000"
+    LINUXWEB = "linuxweb"
+    MEDIACENTER = "mediacenter"
+    TOLNA_NET = "tolna-net"
+    GYOR_NET = "gyor-net"
+    RACKHOST = "rackhost"
+    TARHELY_EU = "tarhely-eu"
+    POSTMASTER_HU = "postmaster-hu"
+    ATW = "atw"
+    DIMA = "dima"
+    NETHELY = "nethely"
+    RATIOR = "ratior"
+    MICROWARE = "microware"
+    WEB200 = "web200"
+    MAXER = "maxer"
+    ABPLUSZ = "abplusz"
+    ININET = "ininet"
+    INTEGRANET = "integranet"
+    AVPMS = "avpms"
+    MAXMAIL = "maxmail"
+    UIWEBSERVICES = "uiwebservices"
+    ASPNET = "aspnet"
+    DTNET = "dtnet"
+    SPAMZABALO = "spamzabalo"
+    HOSTING4U = "hosting4u"
+    GIGANET = "giganet"
+    SMTP_HU = "smtp-hu"
+    UNAS = "unas"
+
+    # Other
+    UNRESOLVED = "unresolved"
+    UNKNOWN = "unknown"
 
 
 class SignalKind(str, enum.Enum):

@@ -6,16 +6,17 @@ function escapeHtml(str) {
   return el.innerHTML;
 }
 
-function initMap(elementId) {
+function initMap(elementId, options) {
+  var settings = options || {};
   if (!CSS.supports('height', '100dvh')) {
     document.body.style.height = window.innerHeight + 'px';
   }
 
   var map = L.map(elementId, {
-    center: [46.8, 8.2],
-    zoom: 8,
-    minZoom: 7,
-    maxZoom: 14,
+    center: settings.center || [47.15, 19.35],
+    zoom: settings.zoom != null ? settings.zoom : 8,
+    minZoom: settings.minZoom != null ? settings.minZoom : 7,
+    maxZoom: settings.maxZoom != null ? settings.maxZoom : 14,
     renderer: L.canvas()
   });
 
@@ -40,6 +41,13 @@ function initMap(elementId) {
   });
 
   return map;
+}
+
+function normalizeMunicipalityId(value) {
+  if (value == null) return '';
+  var text = String(value);
+  var match = text.match(/^[A-Z]{2}_(\d+)$/);
+  return match ? match[1] : text;
 }
 
 function setupInfoBar(map) {
@@ -97,14 +105,65 @@ function addLakes(map, topo, lakeColor) {
 }
 
 async function fetchMapData() {
+  async function fetchOptionalJson(url) {
+    try {
+      var response = await fetch(url);
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (err) {
+      console.warn('Optional data load failed for', url, err);
+      return null;
+    }
+  }
+
   var responses = await Promise.all([
-    fetch('https://unpkg.com/swiss-maps@4.7.0/2026/ch-combined.json'),
-    fetch('data.min.json')
+    fetch('data/LAU_HU_01M_2024_3035.topo.json'),
+    fetchOptionalJson('data/data.min.json'),
+    fetchOptionalJson('data/municipality_domains.json')
   ]);
+
+  if (!responses[0].ok) {
+    throw new Error('Failed to load LAU topology: ' + responses[0].status);
+  }
+
   return {
     topo: await responses[0].json(),
-    dnsData: await responses[1].json()
+    classifiedData: responses[1],
+    domainData: responses[2]
   };
+}
+
+function pickMunicipalityData(topo, datasets) {
+  var geometries = topo &&
+    topo.objects &&
+    topo.objects.municipalities &&
+    topo.objects.municipalities.geometries
+    ? topo.objects.municipalities.geometries
+    : [];
+
+  var geometryIds = new Set(
+    geometries.map(function (geometry) {
+      return normalizeMunicipalityId(geometry.id || (geometry.properties && geometry.properties.GISCO_ID));
+    })
+  );
+
+  var best = null;
+  var bestScore = -1;
+
+  datasets.forEach(function (dataset, priority) {
+    if (!dataset || !dataset.municipalities) return;
+    var municipalities = dataset.municipalities;
+    var score = 0;
+    Object.keys(municipalities).forEach(function (id) {
+      if (geometryIds.has(normalizeMunicipalityId(id))) score++;
+    });
+    if (score > bestScore || (score === bestScore && best && priority < best.priority)) {
+      best = { data: dataset, priority: priority };
+      bestScore = score;
+    }
+  });
+
+  return best ? best.data : { municipalities: {} };
 }
 
 function removeLoading() {

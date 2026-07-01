@@ -65,7 +65,6 @@ async def resolve_robust(qname: str, rdtype: str) -> dns.resolver.Answer | None:
                 type(e).__name__,
                 i,
             )
-            await asyncio.sleep(0.5)
             continue
         except Exception as e:
             logger.warning(

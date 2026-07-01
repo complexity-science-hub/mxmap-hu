@@ -9,7 +9,6 @@ def resolve_domains() -> None:
     from mail_sovereignty.resolve import run
 
     parser = argparse.ArgumentParser(description="Resolve municipality email domains")
-    parser.add_argument("--date", help="BFS snapshot date (DD-MM-YYYY)", default=None)
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="Enable debug logging"
     )
@@ -18,7 +17,7 @@ def resolve_domains() -> None:
     setup_logging(args.verbose)
 
     asyncio.run(
-        run(Path("municipality_domains.json"), Path("overrides.json"), date=args.date)
+        run(Path("data/municipality_domains.json"), Path("data/overrides.json"))
     )
 
 
@@ -35,7 +34,7 @@ def classify_providers() -> None:
 
     setup_logging(args.verbose)
 
-    asyncio.run(run(Path("municipality_domains.json"), Path("data.json")))
+    asyncio.run(run(Path("data/municipality_domains.json"), Path("data/data.json")))
 
 
 def analyze() -> None:

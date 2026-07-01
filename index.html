@@ -13,23 +13,19 @@
 <link rel="dns-prefetch" href="https://b.basemaps.cartocdn.com">
 <link rel="dns-prefetch" href="https://c.basemaps.cartocdn.com">
 <link rel="dns-prefetch" href="https://d.basemaps.cartocdn.com">
-<title>MXmap | Email Providers of Swiss Municipalities</title>
-<meta name="description" content="Interactive map showing the email providers of all ~2,100 Swiss municipalities, based on DNS analysis of MX and SPF records.">
-<meta name="keywords" content="Switzerland, municipalities, email, sovereignty, CLOUD Act, MX records, SPF, DNS, Microsoft 365, Google Workspace, digital sovereignty, data protection">
-<meta name="author" content="David Huser">
+<title>MXmap | Email Providers of Hungarian Municipalities</title>
+<meta name="description" content="Interactive map showing the email providers of all ~3,200 Hungarian municipalities, based on DNS analysis of MX and SPF records.">
+<meta name="keywords" content="Hungary, municipalities, email, sovereignty, CLOUD Act, MX records, SPF, DNS, Microsoft 365, Google Workspace, digital sovereignty, data protection">
+<meta name="author" content="Agnes Sinka">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://mxmap.ch/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="MXmap | Email Providers of Swiss Municipalities">
-<meta property="og:description" content="Interactive map showing where Swiss municipalities host their official email. DNS analysis of all ~2,100 municipalities, color-coded by provider.">
-<meta property="og:url" content="https://mxmap.ch/">
-<meta property="og:locale" content="en_CH">
+<meta property="og:title" content="MXmap | Email Providers of Hungarian Municipalities">
+<meta property="og:description" content="Interactive map showing where Hungarian municipalities host their official email. DNS analysis of all ~3,100 municipalities, color-coded by provider.">
+<meta property="og:locale" content="en_HU">
 <meta property="og:site_name" content="MXmap">
-<meta property="og:image" content="https://mxmap.ch/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="MXmap | Email Providers of Swiss Municipalities">
-<meta name="twitter:description" content="Interactive map showing where Swiss municipalities host their official email. DNS analysis of all ~2,100 municipalities.">
-<meta name="twitter:image" content="https://mxmap.ch/og-image.jpg">
+<meta name="twitter:title" content="MXmap | Email Providers of Hungarian Municipalities">
+<meta name="twitter:description" content="Interactive map showing where Hungarian municipalities host their official email. DNS analysis of all ~3,100 municipalities.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='7' width='28' height='18' rx='2' fill='%231a1a2e'/%3E%3Cpath d='M2 9l14 9 14-9' fill='none' stroke='%2316a34a' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/map.css">
@@ -37,8 +33,9 @@
 <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></noscript>
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script defer src="https://unpkg.com/proj4@2.19.10/dist/proj4.js"></script>
 <script defer src="js/nav.js"></script>
-<script defer src="js/map-shared.js"></script>
+<script defer src="js/map-shared.js?v=20260620-1"></script>
 </head>
 <body>
 <header id="header">
@@ -53,11 +50,11 @@
 </header>
 <section id="info-bar" aria-label="About this project">
 <script>if(window.innerWidth<=600)document.getElementById('info-bar').classList.add('collapsed');</script>
-  <h2 class="info-title">Email Providers of Swiss Municipalities</h2>
+  <h2 class="info-title">Email Providers of Hungarian Municipalities</h2>
   <div class="info-grid">
     <div class="info-card">
       <h3>What is this?</h3>
-      <p>A map of all ~2,100 Swiss municipalities, grouped by jurisdiction. Each is colored by the provider handling its official email, based on public DNS records and other public network signals.</p>
+      <p>A map of all ~2,100 Hungarian municipalities, grouped by jurisdiction. Each is colored by the provider handling its official email, based on public DNS records and other public network signals.</p>
     </div>
     <div class="info-card">
       <h3>Context</h3>
@@ -78,7 +75,7 @@
     </div>
   </div>
 </section>
-<main id="map" role="application" aria-label="Interactive map of Swiss municipality email providers">
+<main id="map" role="application" aria-label="Interactive map of Hungarian municipality email providers">
   <div id="map-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000;background:rgba(255,255,255,0.85);font-size:15px;color:#555;">Loading map data&hellip;</div>
 </main>
 
@@ -86,43 +83,113 @@
 document.addEventListener('DOMContentLoaded', function () {
 const COLOR_SCHEMES = {
   default: {
-    'us-cloud':    { high: '#ff9e91', medium: '#ffccaa', low: '#cccccc' },
-    'swiss-based': { high: '#88faaa', medium: '#daffc2', low: '#cccccc' },
+    'us-cloud':        { high: '#ff9e91', medium: '#ffccaa', low: '#ffdbde' },
+    'hungarian-based':  { high: '#91ff9e', medium: '#aaffcb', low: '#dbffe9' },
+    'european-based': { high: '#a1b2ff', medium: '#c4cfff', low: '#e8ecff' },
+    'unresolved/unknown': { unresolved: '#cccccc', unknown: '#cccccc'},
     lake: '#a3cef1',
   },
   colorblind: {
-    'us-cloud':    { high: '#f1be61', medium: '#fde7c4', low: '#cccccc' },
-    'swiss-based': { high: '#6fa2d0', medium: '#C0D8E8', low: '#cccccc' },
-    lake: '#c4afff',
+    'us-cloud':        { high: '#f1be61', medium: '#fde7c4', low: '#fef5e7' },
+    'hungarian-based':  { high: '#6fa2d0', medium: '#c0d8e8', low: '#ecf3f8' },
+    'european-based': { high: '#bfa5ff', medium: '#dbceff', low: '#f2eeff' },
+    'unresolved/unknown': { unresolved: '#cccccc', unknown: '#cccccc'},
+    'lake':            '#e1d7ff',
   },
 };
 var CATEGORY_COLORS = COLOR_SCHEMES.default;
 const GRAY = '#BFBFBF';
 
-const CANTON_CODES = {
-  'Kanton Zürich': 'ZH', 'Kanton Bern': 'BE', 'Kanton Luzern': 'LU',
-  'Kanton Uri': 'UR', 'Kanton Schwyz': 'SZ', 'Kanton Obwalden': 'OW',
-  'Kanton Nidwalden': 'NW', 'Kanton Glarus': 'GL', 'Kanton Zug': 'ZG',
-  'Kanton Freiburg': 'FR', 'Kanton Solothurn': 'SO', 'Kanton Basel-Stadt': 'BS',
-  'Kanton Basel-Landschaft': 'BL', 'Kanton Schaffhausen': 'SH',
-  'Kanton Appenzell Ausserrhoden': 'AR', 'Kanton Appenzell Innerrhoden': 'AI',
-  'Kanton St. Gallen': 'SG', 'Kanton Graubünden': 'GR', 'Kanton Aargau': 'AG',
-  'Kanton Thurgau': 'TG', 'Kanton Tessin': 'TI', 'Kanton Waadt': 'VD',
-  'Kanton Wallis': 'VS', 'Kanton Neuenburg': 'NE', 'Kanton Genf': 'GE',
-  'Kanton Jura': 'JU'
-};
+
 const LABELS = {
-  microsoft:      'Microsoft 365',
-  google:         'Google Workspace',
-  aws:            'Amazon Web Services',
-  infomaniak:     'Infomaniak',
-  'swiss-isp':    'Swiss ISP',
-  'independent':  'Self-hosted / Other',
-  unknown:        'Unknown'
+  // US cloud
+  microsoft:          'Microsoft 365',
+  google:             'Google Workspace',
+  aws:                'Amazon Web Services',
+  // Hungarian named providers
+  'hungarian-isp':    'Hungarian ISP',
+  dotroll:            'DotRoll',
+  megacp:             'MegaCP',
+  mediacenter:        'MediaCenter',
+  integrity:          'Integrity',
+  'postmaster-hu':    'Postmaster.hu',
+  atw:                'ATW Internet',
+  rackhost:           'Rackhost',
+  maxer:              'Maxer',
+  abplusz:            'AB-Plusz',
+  dima:               'DiMa / DiMail',
+  nethely:            'Nethely',
+  'tarhely-eu':       'Tárhely.eu',
+  ratior:             'Ratior',
+  web200:             'Web200',
+  'tolna-net':        'Tolna.net',
+  linuxweb:           'LinuxWeb',
+  'gyor-net':         'Győr.net',
+  integranet:         'Integranet',
+  't-online':         'Magyar Telekom / T-Online',
+  'iworx-host':       'iWorx Host',
+  webtar:             'Webtár',
+  avpms:              'AVPMS',
+  isiscom:            'ISIS-Com',
+  maxmail:            'Maxmail',
+  microware:          'Microware',
+  globalnet2000:      'GlobalNet2000',
+  uiwebservices:      'UI Web Services',
+  aspnet:             'ASP.net.hu',
+  ininet:             'ININet',
+  dtnet:              'DTNet',
+  spamzabalo:         'Spamzabaló',
+  'hosting4u':        'Hosting4U',
+  giganet:            'Giganet',
+  tarhelypark:        'Tárhely Park',
+  'smtp-hu':          'SMTP.hu',
+  unas:               'Unas',
+  // Hungarian catch-all
+  independent:        'Self-hosted / Other',
+  // EU providers
+  forpsi:             'Forpsi',
+  websupport:         'WebSupport',
+  webonic:            'Webonic',
+  webnode:            'Webnode',
+  'hostns-io':        'HostNS.io',
+  // Unclassified
+  unresolved:         'Unresolved',
+  unknown:            'Unknown',
+};
+
+const PROVIDER_CATEGORY = {
+  microsoft: 'us-cloud', google: 'us-cloud', aws: 'us-cloud',
+  'hungarian-isp': 'hungarian-based', dotroll: 'hungarian-based',
+  megacp: 'hungarian-based', mediacenter: 'hungarian-based',
+  integrity: 'hungarian-based', 'postmaster-hu': 'hungarian-based',
+  atw: 'hungarian-based', rackhost: 'hungarian-based', maxer: 'hungarian-based',
+  abplusz: 'hungarian-based', dima: 'hungarian-based', nethely: 'hungarian-based',
+  'tarhely-eu': 'hungarian-based', ratior: 'hungarian-based', web200: 'hungarian-based',
+  'tolna-net': 'hungarian-based', linuxweb: 'hungarian-based', 'gyor-net': 'hungarian-based',
+  integranet: 'hungarian-based', 't-online': 'hungarian-based', 'iworx-host': 'hungarian-based',
+  webtar: 'hungarian-based', avpms: 'hungarian-based', isiscom: 'hungarian-based',
+  maxmail: 'hungarian-based', microware: 'hungarian-based', globalnet2000: 'hungarian-based',
+  uiwebservices: 'hungarian-based', aspnet: 'hungarian-based', ininet: 'hungarian-based',
+  dtnet: 'hungarian-based', spamzabalo: 'hungarian-based', 'hosting4u': 'hungarian-based',
+  giganet: 'hungarian-based', tarhelypark: 'hungarian-based', 'smtp-hu': 'hungarian-based',
+  unas: 'hungarian-based', independent: 'hungarian-based',
+  forpsi: 'european-based', websupport: 'european-based', webonic: 'european-based',
+  webnode: 'european-based', 'hostns-io': 'european-based',
+  unresolved: 'unresolved', unknown: 'unknown',
+};
+
+const CATEGORY_LABELS = {
+  'us-cloud':       'US cloud',
+  'hungarian-based':'Hungarian',
+  'european-based': 'European',
+  'unresolved':     'unresolved',
+  'unknown':        'unknown',
 };
 
 function effectiveCategory(m) {
-  if (!m || !m.category || m.category === 'unknown') return null;
+  if (!m || !m.category || m.category === 'unknown' || m.category === 'unresolved') return null;
+  if (m.category === 'independent') return 'hungarian-based';
+  if (m.category === 'eu-based') return 'european-based';
   return m.category;
 }
 
@@ -138,128 +205,7 @@ function getColor(m) {
   if (!cat) return GRAY;
   const level = confidenceLevel(m.classification_confidence || 0);
   if (level === 'insufficient') return GRAY;
-  return CATEGORY_COLORS[cat][level];
-}
-
-function classifyHost(host) {
-  const h = host.toLowerCase();
-  // Hyperscalers
-  if (['mail.protection.outlook.com','outlook.com','microsoft','office365','onmicrosoft','spf.protection.outlook.com','sharepointonline'].some(k => h.includes(k)))
-    return { name: 'Microsoft', category: 'hyperscaler' };
-  if (['google','googlemail','gmail','aspmx.l.google.com','_spf.google.com'].some(k => h.includes(k)))
-    return { name: 'Google', category: 'hyperscaler' };
-  if (['amazonaws','amazonses','awsdns'].some(k => h.includes(k)))
-    return { name: 'AWS', category: 'hyperscaler' };
-  // Swiss (explicit)
-  if (['infomaniak','mxpool.infomaniak'].some(k => h.includes(k)))
-    return { name: 'Infomaniak', category: 'swiss' };
-  // Foreign senders
-  if (['mandrillapp.com','mandrill','mcsv.net'].some(k => h.includes(k)))
-    return { name: 'Mailchimp', category: 'foreign' };
-  if (h.includes('sendgrid'))
-    return { name: 'SendGrid', category: 'foreign' };
-  if (h.includes('mailjet'))
-    return { name: 'Mailjet', category: 'foreign' };
-  if (h.includes('mailgun'))
-    return { name: 'Mailgun', category: 'foreign' };
-  if (['sendinblue','brevo'].some(k => h.includes(k)))
-    return { name: 'Brevo', category: 'foreign' };
-  if (h.includes('mailchannels'))
-    return { name: 'MailChannels', category: 'foreign' };
-  if (h.includes('smtp2go'))
-    return { name: 'SMTP2GO', category: 'foreign' };
-  if (h.includes('nl2go'))
-    return { name: 'Newsletter2Go', category: 'foreign' };
-  if (h.includes('hubspotemail'))
-    return { name: 'HubSpot', category: 'foreign' };
-  if (h.includes('knowbe4'))
-    return { name: 'KnowBe4', category: 'foreign' };
-  if (['sophos','sophosxl'].some(k => h.includes(k)))
-    return { name: 'Sophos', category: 'foreign' };
-  if (h.includes('trendmicro'))
-    return { name: 'Trend Micro', category: 'foreign' };
-  if (['hornetsecurity','hornetdmarc'].some(k => h.includes(k)))
-    return { name: 'Hornetsecurity', category: 'foreign' };
-  if (h.includes('barracudanetworks'))
-    return { name: 'Barracuda', category: 'foreign' };
-  if (h.includes('mlsend'))
-    return { name: 'MailerLite', category: 'foreign' };
-  if (h.includes('createsend'))
-    return { name: 'Campaign Monitor', category: 'foreign' };
-  if (h.includes('exclaimer'))
-    return { name: 'Exclaimer', category: 'foreign' };
-  if (h.includes('turbo-smtp'))
-    return { name: 'turboSMTP', category: 'foreign' };
-  if (h.includes('letsignit'))
-    return { name: 'Letsignit', category: 'foreign' };
-  if (h.includes('codetwo'))
-    return { name: 'CodeTwo', category: 'foreign' };
-  if (h.includes('freshservice'))
-    return { name: 'Freshservice', category: 'foreign' };
-  // Email security gateways
-  if (['ppe-hosted','pphosted'].some(k => h.includes(k)))
-    return { name: 'Proofpoint', category: 'foreign' };
-  if (h.includes('vadesecure'))
-    return { name: 'Vade Secure', category: 'foreign' };
-  if (h.includes('fortimailcloud'))
-    return { name: 'Fortinet FortiMail', category: 'foreign' };
-  if (h.includes('spamtitan'))
-    return { name: 'SpamTitan', category: 'foreign' };
-  if (['spamexperts','antispamcloud'].some(k => h.includes(k)))
-    return { name: 'SpamExperts', category: 'foreign' };
-  if (h.includes('iphmx'))
-    return { name: 'Cisco IronPort', category: 'foreign' };
-  if (h.includes('mailcontrol'))
-    return { name: 'MailControl', category: 'foreign' };
-  if (h.includes('mimecast'))
-    return { name: 'Mimecast', category: 'foreign' };
-  if (h.includes('messagelabs'))
-    return { name: 'MessageLabs', category: 'foreign' };
-  // Email routing / hosting
-  if (h.includes('mtaroutes'))
-    return { name: 'MTARoutes', category: 'foreign' };
-  if (h.includes('jimdo'))
-    return { name: 'Jimdo', category: 'foreign' };
-  if (h.includes('arsmtp'))
-    return { name: 'Aruba', category: 'foreign' };
-  if (h.includes('stackmail'))
-    return { name: 'StackMail', category: 'foreign' };
-  // SPF-only services
-  if (h.includes('umantis'))
-    return { name: 'Haufe', category: 'foreign' };
-  if (['emailsignatures365','signature365'].some(k => h.includes(k)))
-    return { name: 'Email Signatures 365', category: 'foreign' };
-  if (h.includes('crsend'))
-    return { name: 'CleverReach', category: 'foreign' };
-  if (h.includes('mailersend'))
-    return { name: 'MailerSend', category: 'foreign' };
-  if (h.includes('emailsrvr'))
-    return { name: 'Rackspace', category: 'foreign' };
-  if (h.includes('edgepilot'))
-    return { name: 'EdgePilot', category: 'foreign' };
-  if (h.includes('appriver'))
-    return { name: 'AppRiver', category: 'foreign' };
-  if (h.includes('scnem'))
-    return { name: 'Evalanche', category: 'foreign' };
-  if (h.includes('rubicon.eu'))
-    return { name: 'Rubicon', category: 'foreign' };
-  // Known Swiss providers with non-.ch TLDs
-  const SWISS_DOMAINS = [
-    'abxsec.com','swiss-egov.cloud','sui-inter.net','ch-dns.net','cyon.net',
-    'seppmail.cloud','swisscom.com','privasphere.com','tinext.com','cloudrexx.com',
-    'mailomat.cloud','comp-sys.net','engadin.cloud','ti-informatique.com',
-    'assolo.net','moresi.com',
-    'naveum.services','spamvor.com','swisscenter.com','seabix.cloud',
-    'swizzonic.email','tinext.net','hosttech.eu','mailpro.com','tizoo.com'
-  ];
-  if (SWISS_DOMAINS.some(d => h.endsWith(d) || h.endsWith('.' + d)))
-    return { name: h.replace(/^_/, '').split('.').slice(-2).join('.'), category: 'swiss' };
-  // TLD-based fallback
-  const parts = host.replace(/^_/, '').split('.');
-  const name = parts.length >= 2 ? parts.slice(-2).join('.') : host;
-  if (h.endsWith('.ch') || h.endsWith('.swiss'))
-    return { name, category: 'swiss' };
-  return { name, category: 'unknown' };
+  return CATEGORY_COLORS[cat] ? CATEGORY_COLORS[cat][level] : GRAY;
 }
 
 function parseSpfDelegations(spf) {
@@ -273,13 +219,14 @@ function parseSpfDelegations(spf) {
   return results;
 }
 
-function renderTable(hosts) {
+function renderTable(hosts, hostProvider) {
   const rows = hosts.map(host => {
-    const cls = classifyHost(host);
-    const eName = escapeHtml(cls.name);
-    const eCat = escapeHtml(cls.category);
+    const provider = (hostProvider && hostProvider[(host || '').toLowerCase()]) || 'unknown';
+    const name = escapeHtml(LABELS[provider] || provider);
+    const category = PROVIDER_CATEGORY[provider] || 'unknown';
+    const catLabel = escapeHtml(CATEGORY_LABELS[category] || category);
     const eHost = escapeHtml(host);
-    return `<tr><td class="dn">${eName}</td><td><span class="cat-badge ${eCat}">${eCat}</span></td><td class="host" title="${eHost}">${eHost}</td></tr>`;
+    return `<tr><td class="dn">${name}</td><td><span class="cat-badge ${category}">${catLabel}</span></td><td class="host" title="${eHost}">${eHost}</td></tr>`;
   }).join('');
   return `<table class="dns-table">${rows}</table>`;
 }
@@ -318,7 +265,7 @@ function condenseDetail(kind, detail) {
     case 'asn':
       m = detail.match(/^ASN\s+(\d+)\s+matches\s+\S+$/);
       if (m) return 'AS' + m[1];
-      m = detail.match(/^ASN\s+(\d+)\s+is Swiss ISP:\s+(.+)$/);
+      m = detail.match(/^ASN\s+(\d+)\s+is Hungarian ISP:\s+(.+)$/);
       if (m) return 'AS' + m[1] + ' (' + m[2] + ')';
       return detail;
     case 'tenant':
@@ -334,7 +281,7 @@ function condenseDetail(kind, detail) {
       if (detail.includes('AWS SES')) return 'AWS SES';
       return detail;
     case 'spf_ip':
-      m = detail.match(/ASN\s+(\d+)\s+is Swiss ISP:\s+(.+)$/);
+      m = detail.match(/ASN\s+(\d+)\s+is Hungarian ISP:\s+(.+)$/);
       if (m) return 'AS' + m[1] + ' (' + m[2] + ')';
       m = detail.match(/ASN\s+(\d+)\s+matches\s+(\S+)$/);
       if (m) return 'AS' + m[1];
@@ -345,6 +292,13 @@ function condenseDetail(kind, detail) {
     default:
       return detail;
   }
+}
+
+if (typeof proj4 !== 'undefined' && !proj4.defs('EPSG:3035')) {
+  proj4.defs(
+    'EPSG:3035',
+    '+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +datum=ETRS89 +units=m +no_defs +type=crs'
+  );
 }
 
 const map = initMap('map');
@@ -361,14 +315,25 @@ window.toggleSection = function(el) {
 var muni = {};
 var muniLayer;
 var lakeLayer;
+var hasClassificationData = false;
+
+function featureMunicipalityId(feature) {
+  return normalizeMunicipalityId(feature.id || (feature.properties && feature.properties.GISCO_ID));
+}
+
+function featureMunicipalityName(feature) {
+  return feature.properties && feature.properties.LAU_NAME
+    ? feature.properties.LAU_NAME
+    : ('ID ' + featureMunicipalityId(feature));
+}
 
 function toggleColorScheme() {
   var isDefault = CATEGORY_COLORS === COLOR_SCHEMES.default;
   CATEGORY_COLORS = isDefault ? COLOR_SCHEMES.colorblind : COLOR_SCHEMES.default;
 
   muniLayer.eachLayer(function (layer) {
-    var bfs = String(layer.feature.id);
-    var m = muni[bfs];
+    var muniId = featureMunicipalityId(layer.feature);
+    var m = muni[muniId];
     layer.setStyle({ fillColor: getColor(m) });
   });
 
@@ -398,48 +363,62 @@ function legendCategoryHtml(label, colors, count, catKey, levels) {
 }
 
 async function loadData() {
-  const { topo, dnsData } = await fetchMapData();
-  muni = dnsData.municipalities;
-  showGenerated(dnsData);
+  const { topo, classifiedData, domainData } = await fetchMapData();
+  const mapData = pickMunicipalityData(topo, [classifiedData, domainData]);
+  muni = mapData.municipalities || {};
+  hasClassificationData = Object.keys(muni).some(function (id) {
+    return !!effectiveCategory(muni[id]);
+  });
+  showGenerated(mapData);
 
   // Count by jurisdiction and confidence level
-  const catCounts = { 'us-cloud': 0, 'swiss-based': 0 };
+  const catCounts = { 'us-cloud': 0, 'hungarian-based': 0, 'european-based': 0 };
   const levelCounts = {
     'us-cloud': { high: 0, medium: 0, low: 0 },
-    'swiss-based': { high: 0, medium: 0, low: 0 }
+    'hungarian-based': { high: 0, medium: 0, low: 0 },
+    'european-based': { high: 0, medium: 0, low: 0 },
   };
-  for (const bfs of Object.keys(muni)) {
-    const m = muni[bfs];
+  let greyCount = 0;
+  for (const muniId of Object.keys(muni)) {
+    const m = muni[muniId];
     const cat = effectiveCategory(m);
-    if (cat) {
+    if (cat && catCounts[cat] !== undefined) {
       catCounts[cat]++;
       const level = confidenceLevel(m ? (m.classification_confidence || 0) : 0);
       if (level !== 'insufficient') levelCounts[cat][level]++;
+    } else {
+      greyCount++;
     }
   }
 
   // Legend with counts
-  const isMobile = window.innerWidth <= 600;
-  const legend = L.control({ position: isMobile ? 'topright' : 'bottomright' });
-  legend.onAdd = function () {
-    const div = L.DomUtil.create('div', 'legend');
-    if (isMobile) div.classList.add('legend-collapsed');
-    div.innerHTML =
-      '<button class="legend-toggle" aria-label="Toggle legend" aria-expanded="' + (!isMobile) + '">' + (isMobile ? 'Legend \u25B8' : '') + '</button>' +
-      '<div class="legend-content">' +
-      legendCategoryHtml('US Cloud', CATEGORY_COLORS['us-cloud'], catCounts['us-cloud'], 'us-cloud', levelCounts['us-cloud']) +
-      legendCategoryHtml('Swiss Based', CATEGORY_COLORS['swiss-based'], catCounts['swiss-based'], 'swiss-based', levelCounts['swiss-based']) +
-      '<div class="legend-group legend-other">' +
-      '<i class="legend-swatch" data-lake="1" style="background:' + CATEGORY_COLORS.lake + '"></i>Lake (not a municipality)' +
-      '</div>' +
-      '<button class="color-toggle" aria-label="Switch to colorblind-safe colors">\u25D0 Colorblind mode</button>' +
-      '</div>';
-    L.DomEvent.disableClickPropagation(div);
-    return div;
-  };
-  legend.addTo(map);
-  document.querySelector('.legend-toggle').addEventListener('click', toggleLegend);
-  document.querySelector('.color-toggle').addEventListener('click', toggleColorScheme);
+  if (hasClassificationData) {
+    const isLegendMobile = window.innerWidth <= 600;
+    const legend = L.control({ position: isLegendMobile ? 'topright' : 'bottomright' });
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'legend');
+      if (isLegendMobile) div.classList.add('legend-collapsed');
+      div.innerHTML =
+        '<button class="legend-toggle" aria-label="Toggle legend" aria-expanded="' + (!isLegendMobile) + '">' + (isLegendMobile ? 'Legend \u25B8' : '') + '</button>' +
+        '<div class="legend-content">' +
+        legendCategoryHtml('US Cloud', CATEGORY_COLORS['us-cloud'], catCounts['us-cloud'], 'us-cloud', levelCounts['us-cloud']) +
+        legendCategoryHtml('Hungarian Based', CATEGORY_COLORS['hungarian-based'], catCounts['hungarian-based'], 'hungarian-based', levelCounts['hungarian-based']) +
+        legendCategoryHtml('European Based', CATEGORY_COLORS['european-based'], catCounts['european-based'], 'european-based', levelCounts['european-based']) +
+        '<div class="legend-group legend-other">' +
+        '<i class="legend-swatch" style="background:#cccccc"></i>Unresolved / Unknown (' + greyCount + ')<br>' +
+        '</div>' +
+        '<div class="legend-group legend-other">' +
+        '<i class="legend-swatch" data-lake="1" style="background:' + CATEGORY_COLORS.lake + '"></i>Lake (not a municipality)' +
+        '</div>' +
+        '<button class="color-toggle" aria-label="Switch to colorblind-safe colors">\u25D0 Colorblind mode</button>' +
+        '</div>';
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    };
+    legend.addTo(map);
+    document.querySelector('.legend-toggle').addEventListener('click', toggleLegend);
+    document.querySelector('.color-toggle').addEventListener('click', toggleColorScheme);
+  }
 
   // Render lakes
   lakeLayer = addLakes(map, topo, CATEGORY_COLORS.lake);
@@ -448,9 +427,13 @@ async function loadData() {
   const geojson = topojson.feature(topo, topo.objects.municipalities);
 
   muniLayer = L.geoJSON(geojson, {
+    coordsToLatLng: function (coords) {
+      var point = proj4('EPSG:3035', 'EPSG:4326', coords);
+      return L.latLng(point[1], point[0]);
+    },
     style: function (feature) {
-      const bfs = String(feature.id);
-      const m = muni[bfs];
+      const muniId = featureMunicipalityId(feature);
+      const m = muni[muniId];
       return {
         fillColor: getColor(m),
         weight: 0.6,
@@ -459,23 +442,30 @@ async function loadData() {
       };
     },
     onEachFeature: function (feature, layer) {
-      const bfs = String(feature.id);
-      const m = muni[bfs];
+      const muniId = featureMunicipalityId(feature);
+      const m = muni[muniId];
+      const featureName = featureMunicipalityName(feature);
       if (!m) {
-        layer.bindPopup(`<div class="info-popup"><strong>BFS ${bfs}</strong><br>No data</div>`);
+        layer.bindPopup(`<div class="info-popup"><strong>${escapeHtml(featureName)}</strong><br>No data</div>`);
         return;
       }
       const color = getColor(m);
-      const cat = effectiveCategory(m);
-      const level = confidenceLevel(m.classification_confidence || 0);
       const textColor = '#000';
-      const label = LABELS[m.provider] || m.provider;
+      const label = m.provider ? (LABELS[m.provider] || m.provider) : 'Unclassified';
 
       const showBody = isMobile ? 'display:none' : '';
 
+      const hostProvider = {};
+      for (const s of (m.classification_signals || [])) {
+        if (s.kind === 'mx' || s.kind === 'spf') {
+          const h = condenseDetail(s.kind, s.detail);
+          if (h) hostProvider[h.toLowerCase()] = s.provider;
+        }
+      }
+
       let mxSection = '';
       if (m.mx && m.mx.length > 0) {
-        mxSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Incoming mail handled by <span class="popup-section-hint">(MX)</span></div><div class="popup-section-body" style="${showBody}">${renderTable(m.mx)}</div></div>`;
+        mxSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Incoming mail handled by <span class="popup-section-hint">(MX)</span></div><div class="popup-section-body" style="${showBody}">${renderTable(m.mx, hostProvider)}</div></div>`;
       } else {
         mxSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Incoming mail handled by <span class="popup-section-hint">(MX)</span></div><div class="popup-section-body" style="${showBody}"><span class="popup-empty">No MX records found</span></div></div>`;
       }
@@ -483,15 +473,13 @@ async function loadData() {
       const spfDelegations = parseSpfDelegations(m.spf);
       let spfSection = '';
       if (spfDelegations.length > 0) {
-        spfSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Authorized to send mail <span class="popup-section-hint">(SPF)</span></div><div class="popup-section-body" style="${showBody}">${renderTable(spfDelegations)}</div></div>`;
+        spfSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Authorized to send mail <span class="popup-section-hint">(SPF)</span></div><div class="popup-section-body" style="${showBody}">${renderTable(spfDelegations, hostProvider)}</div></div>`;
       } else if (m.spf) {
         spfSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Authorized to send mail <span class="popup-section-hint">(SPF)</span></div><div class="popup-section-body" style="${showBody}"><span class="popup-empty">${escapeHtml(m.spf)}</span></div></div>`;
       } else {
         spfSection = `<div class="popup-section"><div class="popup-toggle${isMobile ? '' : ' popup-toggle-open'}" onclick="window.toggleSection(this)">Authorized to send mail <span class="popup-section-hint">(SPF)</span></div><div class="popup-section-body" style="${showBody}"><span class="popup-empty">No SPF record found</span></div></div>`;
       }
 
-      const confidence = m.classification_confidence != null ? m.classification_confidence : 0;
-      const confPct = Math.round(confidence) + '%';
       let signalsSection = '';
       if (m.classification_signals && m.classification_signals.length > 0) {
         const deduped = deduplicateSignals(m.classification_signals);
@@ -507,15 +495,21 @@ async function loadData() {
         signalsSection = `<div class="popup-section"><div class="popup-toggle" onclick="window.toggleSection(this)">Classification signals</div><div class="popup-section-body" style="display:none"><span class="popup-empty">No classification signals</span></div></div>`;
       }
 
-      const eName = escapeHtml(m.name);
-      const cantonCode = CANTON_CODES[m.canton] || '';
-      const nameDisplay = cantonCode ? `${eName} (${cantonCode})` : eName;
-      const eDomain = escapeHtml(m.domain || 'unknown');
+      const eName = escapeHtml(m.name || featureName);
+      const areaLabel = m.county || '';
+      const nameDisplay = areaLabel ? `${eName} (${escapeHtml(areaLabel)})` : eName;
+      const eDomain = escapeHtml(m.domain || 'No domain found');
       const eLabel = escapeHtml(label);
       const badge = `<span class="provider-badge" style="background:${color};color:${textColor}">${eLabel}</span>`;
-      const metaParts = [`Confidence: ${confPct}`];
+      const metaParts = [];
+      if (m.classification_confidence != null) {
+        metaParts.push(`Confidence: ${Math.round(m.classification_confidence)}%`);
+      } else if (m.confidence) {
+        metaParts.push(`Resolution: ${escapeHtml(m.confidence)}`);
+      }
+      if (m.source) metaParts.push(`Source: ${escapeHtml(m.source)}`);
       if (m.gateway) metaParts.push(`Gateway: ${escapeHtml(m.gateway)}`);
-      const metaLine = `<div class="popup-meta">${metaParts.join(' &middot; ')}</div>`;
+      const metaLine = metaParts.length ? `<div class="popup-meta">${metaParts.join(' &middot; ')}</div>` : '';
 
       layer.bindPopup(
         `<div class="info-popup">` +

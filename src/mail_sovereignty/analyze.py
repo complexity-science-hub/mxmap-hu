@@ -7,16 +7,20 @@ import os
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
-from .constants import CANTON_ABBREVIATIONS
 from .pipeline import _CATEGORY_MAP
 
 # ---------------------------------------------------------------------------
 # ANSI color helpers (respect NO_COLOR convention and pipe detection)
 # ---------------------------------------------------------------------------
 
-_NO_COLOR = os.environ.get("NO_COLOR") is not None or not os.isatty(sys.stdout.fileno())
+try:
+    _is_tty = os.isatty(sys.stdout.fileno())
+except Exception:
+    _is_tty = False
+
+_NO_COLOR = os.environ.get("NO_COLOR") is not None or not _is_tty
 
 
 def _c(code: str, text: str) -> str:
@@ -45,12 +49,20 @@ def _yellow(t: str) -> str:
     return _c("33", t)
 
 
+def _blue(t: str) -> str:
+    return _c("34", t)
+
+
+def _plain(t: str) -> str:
+    return t
+
+
 # ---------------------------------------------------------------------------
 # Formatting helpers
 # ---------------------------------------------------------------------------
 
-_BAR_FULL = "\u2588"
-_BAR_EMPTY = "\u2591"
+_BAR_FULL = "#"
+_BAR_EMPTY = "."
 
 
 def _bar(value: float, max_value: float, width: int = 25) -> str:
@@ -67,14 +79,14 @@ def _pct(n: int, total: int) -> str:
 
 
 def _header(title: str) -> None:
-    line = "\u2550" * 66
+    line = "=" * 66
     print(f"\n{_bold(line)}")
     print(f"  {_bold(title)}")
     print(_bold(line))
 
 
 def _sep() -> None:
-    print("  " + "\u2500" * 62)
+    print("  " + "-" * 62)
 
 
 # ---------------------------------------------------------------------------
@@ -95,19 +107,39 @@ def load_data(path: Path) -> dict[str, Any]:
 # Helpers
 # ---------------------------------------------------------------------------
 
-_CANTON_LOOKUP = {k: v.upper() for k, v in CANTON_ABBREVIATIONS.items()}
+_CATEGORIES_ORDERED = [
+    "us-cloud",
+    "hungarian-based",
+    "european-based",
+    "unresolved",
+    "unknown",
+]
 
-_PROVIDERS_ORDERED = ["microsoft", "google", "aws", "infomaniak", "independent"]
+_CATEGORY_LABELS: dict[str, str] = {
+    "us-cloud": "US Cloud",
+    "hungarian-based": "Hungarian Based",
+    "european-based": "European Based",
+    "unresolved": "Unresolved",
+    "unknown": "Unknown",
+}
+
+_CATEGORY_COLOR: dict[str, Callable[[str], str]] = {
+    "us-cloud": _red,
+    "hungarian-based": _green,
+    "european-based": _blue,
+    "unresolved": _yellow,
+    "unknown": _dim,
+}
 
 _PRIMARY_SIGNAL_KINDS = {"mx", "spf", "dkim", "autodiscover"}
 
 
-def _canton_abbr(canton: str) -> str:
-    return _CANTON_LOOKUP.get(canton, "??")
-
-
 def _category(provider: str) -> str:
     return _CATEGORY_MAP.get(provider, "unknown")
+
+
+def _color_for(provider: str) -> Callable[[str], str]:
+    return _CATEGORY_COLOR.get(_category(provider), _plain)
 
 
 # ---------------------------------------------------------------------------
@@ -129,83 +161,84 @@ def report_overall_summary(data: dict[str, Any], munis: dict[str, Any]) -> None:
         cat_counts[_category(m["provider"])] += 1
 
     print()
-    print(f"  {'Category':<16} {'Count':>6}  {'%':>6}  Bar")
+    print(f"  {'Category':<18} {'Count':>6}  {'%':>6}  Bar")
     _sep()
-    for cat in ["us-cloud", "swiss-based"]:
-        cnt = cat_counts[cat]
-        color = _red if cat == "us-cloud" else _green
-        label = "US Cloud" if cat == "us-cloud" else "Swiss Based"
+    for cat in _CATEGORIES_ORDERED:
+        cnt = cat_counts.get(cat, 0)
+        if cnt == 0:
+            continue
+        label = _CATEGORY_LABELS[cat]
+        color = _CATEGORY_COLOR[cat]
         print(
-            f"  {color(f'{label:<16}')} {cnt:>6,}  {_pct(cnt, total)}  "
+            f"  {color(f'{label:<18}')} {cnt:>6,}  {_pct(cnt, total)}  "
             f"{color(_bar(cnt, total))}"
         )
 
-    # Provider distribution
+    # Provider distribution — top 15 by count
     prov_counts: Counter[str] = Counter()
     for m in munis.values():
         prov_counts[m["provider"]] += 1
 
     print()
-    print(f"  {'Provider':<16} {'Count':>6}  {'%':>6}  Bar")
+    print(f"  {'Provider':<20} {'Count':>6}  {'%':>6}  Bar")
     _sep()
-    for prov in _PROVIDERS_ORDERED:
-        cnt = prov_counts.get(prov, 0)
-        color = _red if _category(prov) == "us-cloud" else _green
+    max_cnt = max(prov_counts.values()) if prov_counts else 1
+    top15 = prov_counts.most_common(15)
+    for prov, cnt in top15:
+        color = _color_for(prov)
         print(
-            f"  {color(f'{prov:<16}')} {cnt:>6,}  {_pct(cnt, total)}  "
-            f"{color(_bar(cnt, max(prov_counts.values())))}"
+            f"  {color(f'{prov:<20}')} {cnt:>6,}  {_pct(cnt, total)}  "
+            f"{color(_bar(cnt, max_cnt))}"
+        )
+    shown = sum(cnt for _, cnt in top15)
+    if shown < total:
+        rest = total - shown
+        print(
+            f"  {_dim(f'(other providers)' + '  ' * 6)} {rest:>6,}  {_pct(rest, total)}"
         )
 
 
 # ---------------------------------------------------------------------------
-# 2. Cantonal Breakdown
+# 2. County Breakdown
 # ---------------------------------------------------------------------------
 
 
-def report_cantonal(munis: dict[str, Any]) -> None:
-    _header("CANTONAL BREAKDOWN (sorted by US-Cloud %)")
+def report_county(munis: dict[str, Any]) -> None:
+    _header("COUNTY BREAKDOWN (sorted by US-Cloud %)")
 
-    # Group by canton
-    by_canton: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_county: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for m in munis.values():
-        by_canton[_canton_abbr(m.get("canton", ""))].append(m)
+        by_county[m.get("county", "(unknown)")].append(m)
 
-    # Build rows
     rows: list[tuple[str, int, dict[str, int], float]] = []
-    for abbr, entries in by_canton.items():
+    for county, entries in by_county.items():
         total = len(entries)
-        prov_counts: Counter[str] = Counter(e["provider"] for e in entries)
-        us_cloud = sum(
-            prov_counts.get(p, 0)
-            for p in _PROVIDERS_ORDERED
-            if _category(p) == "us-cloud"
-        )
-        us_pct = us_cloud / total * 100 if total else 0
-        rows.append((abbr, total, dict(prov_counts), us_pct))
+        cat_counts: Counter[str] = Counter(_category(e["provider"]) for e in entries)
+        us_pct = cat_counts.get("us-cloud", 0) / total * 100 if total else 0
+        rows.append((county, total, dict(cat_counts), us_pct))
 
     rows.sort(key=lambda r: r[3], reverse=True)
 
-    hdr = (
-        f"  {'Canton':<8}{'Total':>5}"
-        f"{'MSFT':>6}{'Goog':>6}{'AWS':>5}"
-        f"{'Info':>6}{'Indep':>6}"
-        f"  {'US%':>6}  {'Swiss%':>6}"
+    print(
+        f"  {'County':<28}{'Total':>5}"
+        f"{'US':>5}{'HU':>5}{'EU':>5}{'Unres':>6}"
+        f"  {'US%':>6}  {'HU%':>6}"
     )
-    print(hdr)
     _sep()
 
-    for abbr, total, pc, us_pct in rows:
-        swiss_pct = 100 - us_pct
-        color = _red if us_pct >= 70 else (_yellow if us_pct >= 50 else _green)
+    for county, total, cc, us_pct in rows:
+        us_cnt = cc.get("us-cloud", 0)
+        hu_cnt = cc.get("hungarian-based", 0)
+        eu_cnt = cc.get("european-based", 0)
+        unres = cc.get("unresolved", 0) + cc.get("unknown", 0)
+        hu_pct = hu_cnt / total * 100 if total else 0
+        color = _red if us_pct >= 50 else (_yellow if us_pct >= 30 else _green)
+        label = (county[:26] + "..") if len(county) > 26 else county
         print(
-            f"  {abbr:<8}{total:>5}"
-            f"{pc.get('microsoft', 0):>6}"
-            f"{pc.get('google', 0):>6}"
-            f"{pc.get('aws', 0):>5}"
-            f"{pc.get('infomaniak', 0):>6}"
-            f"{pc.get('independent', 0):>6}"
+            f"  {label:<28}{total:>5}"
+            f"{us_cnt:>5}{hu_cnt:>5}{eu_cnt:>5}{unres:>6}"
             f"  {color(f'{us_pct:5.1f}%')}"
-            f"  {f'{swiss_pct:5.1f}%':>6}"
+            f"  {f'{hu_pct:5.1f}%':>6}"
         )
 
 
@@ -220,7 +253,6 @@ def report_confidence(munis: dict[str, Any]) -> None:
     confidences = [m["classification_confidence"] for m in munis.values()]
     total = len(confidences)
 
-    # Histogram buckets (high to low)
     buckets = [(90, 100), (80, 90), (70, 80), (60, 70), (50, 60), (0, 50)]
     bucket_counts = []
     for lo, hi in buckets:
@@ -237,23 +269,24 @@ def report_confidence(munis: dict[str, Any]) -> None:
     avg = sum(confidences) / total if total else 0
     print(f"\n  Average confidence: {_bold(f'{avg:.1f}%')}")
 
-    # Per-provider stats
-    by_prov: dict[str, list[float]] = defaultdict(list)
+    # Per-category confidence stats
+    by_cat: dict[str, list[float]] = defaultdict(list)
     for m in munis.values():
-        by_prov[m["provider"]].append(m["classification_confidence"])
+        by_cat[_category(m["provider"])].append(m["classification_confidence"])
 
     print()
-    print(f"  {'Provider':<16} {'Avg':>6}  {'Min':>6}  {'<60':>5}")
+    print(f"  {'Category':<18} {'Avg':>6}  {'Min':>6}  {'<60':>5}")
     _sep()
-    for prov in _PROVIDERS_ORDERED:
-        confs = by_prov.get(prov, [])
+    for cat in _CATEGORIES_ORDERED:
+        confs = by_cat.get(cat, [])
         if not confs:
             continue
         avg_p = sum(confs) / len(confs)
         min_p = min(confs)
         low = sum(1 for c in confs if c < 60)
         low_str = _red(f"{low:>5}") if low > 0 else f"{low:>5}"
-        print(f"  {prov:<16} {avg_p:>5.1f}%  {min_p:>5.1f}%  {low_str}")
+        label = _CATEGORY_LABELS[cat]
+        print(f"  {label:<18} {avg_p:>5.1f}%  {min_p:>5.1f}%  {low_str}")
 
 
 # ---------------------------------------------------------------------------
@@ -266,7 +299,6 @@ def report_signals(munis: dict[str, Any]) -> None:
 
     total = len(munis)
 
-    # Signal coverage
     signal_counts: Counter[str] = Counter()
     combo_counts: Counter[str] = Counter()
     single_signal: list[dict[str, Any]] = []
@@ -299,13 +331,13 @@ def report_signals(munis: dict[str, Any]) -> None:
     print(f"\n  Single-signal municipalities: {_yellow(str(len(single_signal)))}")
     for m in single_signal[:5]:
         sig = m["classification_signals"][0]
-        print(f"    {m['bfs']:>5}  {m['name']:<30} {sig['kind']}:{sig['provider']}")
+        print(f"    {m['id']:>6}  {m['name']:<30} {sig['kind']}:{sig['provider']}")
     if len(single_signal) > 5:
         print(f"    {_dim(f'... and {len(single_signal) - 5} more')}")
 
     print(f"\n  Zero-signal municipalities: {_yellow(str(len(zero_signal)))}")
     for m in zero_signal[:5]:
-        print(f"    {m['bfs']:>5}  {m['name']:<30} provider={m['provider']}")
+        print(f"    {m['id']:>6}  {m['name']:<30} provider={m['provider']}")
     if len(zero_signal) > 5:
         print(f"    {_dim(f'... and {len(zero_signal) - 5} more')}")
 
@@ -319,33 +351,35 @@ def report_gateways(munis: dict[str, Any]) -> None:
     _header("GATEWAY REPORT")
 
     total = len(munis)
-    with_gw = {b: m for b, m in munis.items() if m.get("gateway")}
-    without_gw = {b: m for b, m in munis.items() if not m.get("gateway")}
+    with_gw = {k: m for k, m in munis.items() if m.get("gateway")}
+    without_gw = {k: m for k, m in munis.items() if not m.get("gateway")}
 
     print(
         f"  Municipalities with gateway: "
         f"{_bold(str(len(with_gw)))} / {total} ({len(with_gw) / total * 100:.1f}%)"
     )
 
-    # Per-gateway counts
     gw_counts: Counter[str] = Counter(m["gateway"] for m in with_gw.values())
-    print()
-    print(f"  {'Gateway':<20} {'Count':>6}")
-    _sep()
-    for gw, cnt in gw_counts.most_common():
-        print(f"  {gw:<20} {cnt:>6,}")
+    if gw_counts:
+        print()
+        print(f"  {'Gateway':<20} {'Count':>6}")
+        _sep()
+        for gw, cnt in gw_counts.most_common():
+            print(f"  {gw:<20} {cnt:>6,}")
 
-    # Provider distribution with/without gateway
-    print("\n  Provider distribution:\n")
-    print(f"  {'Provider':<16}  {'With GW':>8} {'%':>6}  {'No GW':>8} {'%':>6}")
+    print("\n  Category distribution:\n")
+    print(f"  {'Category':<18}  {'With GW':>8} {'%':>6}  {'No GW':>8} {'%':>6}")
     _sep()
-    for prov in _PROVIDERS_ORDERED:
-        cnt_w = sum(1 for m in with_gw.values() if m["provider"] == prov)
-        cnt_wo = sum(1 for m in without_gw.values() if m["provider"] == prov)
+    for cat in _CATEGORIES_ORDERED:
+        cnt_w = sum(1 for m in with_gw.values() if _category(m["provider"]) == cat)
+        cnt_wo = sum(1 for m in without_gw.values() if _category(m["provider"]) == cat)
+        if cnt_w == 0 and cnt_wo == 0:
+            continue
+        label = _CATEGORY_LABELS[cat]
         print(
-            f"  {prov:<16}"
-            f"  {cnt_w:>8,} {_pct(cnt_w, len(with_gw))}"
-            f"  {cnt_wo:>8,} {_pct(cnt_wo, len(without_gw))}"
+            f"  {label:<18}"
+            f"  {cnt_w:>8,} {_pct(cnt_w, len(with_gw) or 1)}"
+            f"  {cnt_wo:>8,} {_pct(cnt_wo, len(without_gw) or 1)}"
         )
 
 
@@ -386,7 +420,6 @@ def report_domain_sharing(munis: dict[str, Any]) -> None:
 def report_low_confidence(munis: dict[str, Any]) -> None:
     _header("LOW-CONFIDENCE / REVIEW CANDIDATES")
 
-    # Low confidence
     low = [m for m in munis.values() if m["classification_confidence"] < 60]
     low.sort(key=lambda m: m["classification_confidence"])
 
@@ -394,7 +427,7 @@ def report_low_confidence(munis: dict[str, Any]) -> None:
     if low:
         print()
         print(
-            f"  {'BFS':>5}  {'Name':<28} {'Canton':<6} {'Provider':<14} "
+            f"  {'ID':>6}  {'Name':<28} {'County':<20} {'Provider':<16} "
             f"{'Conf':>5}  Signals"
         )
         _sep()
@@ -402,10 +435,12 @@ def report_low_confidence(munis: dict[str, Any]) -> None:
             signals = "+".join(
                 sorted({s["kind"] for s in m.get("classification_signals", [])})
             )
+            county = m.get("county", "")
+            county_label = (county[:18] + "..") if len(county) > 18 else county
             print(
-                f"  {m['bfs']:>5}  {m['name']:<28} "
-                f"{_canton_abbr(m.get('canton', '')):>4}  "
-                f"{m['provider']:<14} "
+                f"  {m['id']:>6}  {m['name']:<28} "
+                f"{county_label:<20}  "
+                f"{m['provider']:<16} "
                 f"{m['classification_confidence']:>4.0f}%  {signals}"
             )
 
@@ -428,11 +463,11 @@ def report_low_confidence(munis: dict[str, Any]) -> None:
     if conflicts:
         conflicts.sort(key=lambda x: len(x[2]), reverse=True)
         print()
-        print(f"  {'BFS':>5}  {'Name':<28} {'Winner':<14} {'Conflict':>14}  Signals")
+        print(f"  {'ID':>6}  {'Name':<28} {'Winner':<16} {'Conflict':>14}  Signals")
         _sep()
         for m, other, kinds in conflicts[:20]:
             print(
-                f"  {m['bfs']:>5}  {m['name']:<28} {m['provider']:<14} "
+                f"  {m['id']:>6}  {m['name']:<28} {m['provider']:<16} "
                 f"{other:>14}  {'+'.join(sorted(kinds))}"
             )
         if len(conflicts) > 20:
@@ -445,11 +480,11 @@ def report_low_confidence(munis: dict[str, Any]) -> None:
 
 
 def main() -> None:
-    data = load_data(Path("data.json"))
+    data = load_data(Path("data/data.json"))
     munis = data["municipalities"]
 
     report_overall_summary(data, munis)
-    report_cantonal(munis)
+    report_county(munis)
     report_confidence(munis)
     report_signals(munis)
     report_gateways(munis)
