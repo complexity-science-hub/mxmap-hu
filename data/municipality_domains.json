@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-29T11:01:06Z",
+  "generated": "2026-07-15T11:41:55Z",
   "total": 3178,
   "municipalities": {
     "01508": {
@@ -116,7 +116,9 @@
         "wikidata": [
           "kakasd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kakasd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kakasd.hu"
@@ -140,7 +142,9 @@
         "wikidata": [
           "narda.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "narda.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "narda.hu"
@@ -190,7 +194,9 @@
         "wikidata": [
           "gonyu.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gonyu.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gonyu.hu"
@@ -456,7 +462,9 @@
         "wikidata": [
           "csopak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csopak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csopak.hu"
@@ -532,7 +540,9 @@
         "wikidata": [
           "balatonfuzfo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonfuzfo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonfuzfo.hu"
@@ -656,7 +666,9 @@
         "wikidata": [
           "abaujvar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "abaujvar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "abaujvar.hu"
@@ -704,9 +716,7 @@
         "wikidata": [
           "tiszababolna.hu"
         ],
-        "wikidata_scrape": [
-          "tiszababolna.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "tiszababolna.hu"
@@ -756,8 +766,13 @@
         "wikidata": [
           "etyek.hu"
         ],
-        "wikidata_scrape": [],
-        "wikidata_redirect": [],
+        "wikidata_scrape": [
+          "etyek.hu",
+          "webetyek.hu"
+        ],
+        "wikidata_redirect": [
+          "webetyek.hu"
+        ],
         "guess": [
           "etyek.hu"
         ],
@@ -998,7 +1013,9 @@
         "wikidata": [
           "buk.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "buk.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "buk.hu",
@@ -1033,21 +1050,17 @@
       "id": "02459",
       "name": "Vajta",
       "county": "Fejér",
-      "domain": "vajta.hu",
-      "source": "source_agreement",
-      "confidence": "high",
+      "domain": "",
+      "source": "none",
+      "confidence": "none",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
         "override_redirect": [],
-        "wikidata": [
-          "vajta.hu"
-        ],
+        "wikidata": [],
         "wikidata_scrape": [],
         "wikidata_redirect": [],
-        "guess": [
-          "vajta.hu"
-        ],
+        "guess": [],
         "guess_scrape": [],
         "guess_redirect": []
       },
@@ -1067,7 +1080,9 @@
         "wikidata": [
           "hegymeg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hegymeg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hegymeg.hu"
@@ -1137,7 +1152,9 @@
         "wikidata": [
           "nagycenk.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagycenk.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagycenk.hu"
@@ -1423,7 +1440,9 @@
         "wikidata": [
           "otteveny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "otteveny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "otteveny.hu"
@@ -1543,7 +1562,9 @@
         "wikidata": [
           "bekesszentandras.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bekesszentandras.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bekesszentandras.hu"
@@ -1765,7 +1786,9 @@
         "wikidata": [
           "nemesgulacs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nemesgulacs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nemesgulacs.hu"
@@ -2702,7 +2725,9 @@
         "wikidata": [
           "rabahidveg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "rabahidveg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "rabahidveg.hu"
@@ -2876,7 +2901,9 @@
         "wikidata": [
           "badacsonytordemic.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "badacsonytordemic.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "badacsonytordemic.hu"
@@ -3258,7 +3285,9 @@
         "wikidata": [
           "bogyiszlo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bogyiszlo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bogyiszlo.hu"
@@ -3671,9 +3700,7 @@
         "wikidata": [
           "abaujszanto.hu"
         ],
-        "wikidata_scrape": [
-          "abaujszanto.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "abaujszanto.hu"
@@ -4361,7 +4388,9 @@
         "wikidata": [
           "szerecseny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szerecseny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szerecseny.hu"
@@ -4559,7 +4588,9 @@
         "wikidata": [
           "baksa.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "baksa.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "baksa.hu"
@@ -4944,7 +4975,9 @@
         "wikidata": [
           "tottos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tottos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tottos.hu"
@@ -5138,7 +5171,9 @@
         "wikidata": [
           "nyomar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nyomar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nyomar.hu"
@@ -5585,7 +5620,9 @@
         "wikidata": [
           "makad.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "makad.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "makad.hu"
@@ -5921,7 +5958,9 @@
         "wikidata": [
           "mindszentkalla.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mindszentkalla.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mindszentkalla.hu"
@@ -5993,7 +6032,9 @@
         "wikidata": [
           "abrahamhegy.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "abrahamhegy.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "abrahamhegy.hu"
@@ -6281,7 +6322,9 @@
         "wikidata": [
           "dedestapolcsany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dedestapolcsany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dedestapolcsany.hu"
@@ -6551,7 +6594,9 @@
         "wikidata": [
           "rabacsanak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "rabacsanak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "rabacsanak.hu"
@@ -6599,7 +6644,10 @@
         "wikidata": [
           "zsaka.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ph-zsaka.hu",
+          "zsaka.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zsaka.hu"
@@ -6860,7 +6908,9 @@
         "wikidata": [
           "karcag.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ph.karcag.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "karcag.hu"
@@ -7100,7 +7150,10 @@
         "wikidata": [
           "gyula.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "eualapgyula.hu",
+          "gyula.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyula.hu",
@@ -7586,7 +7639,9 @@
         "wikidata": [
           "gyongyos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hivatal.gyongyos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyongyos.hu",
@@ -7611,7 +7666,9 @@
         "wikidata": [
           "nemesbikk.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nemesbikk.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nemesbikk.hu"
@@ -7635,7 +7692,9 @@
         "wikidata": [
           "kuncsorba.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kuncsorba.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kuncsorba.hu"
@@ -7782,7 +7841,9 @@
         "wikidata": [
           "borsodnadasd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "borsodnadasd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "borsodnadasd.hu"
@@ -7978,7 +8039,9 @@
         "wikidata": [
           "pusztafoldvar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pusztafoldvar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pusztafoldvar.hu"
@@ -8002,7 +8065,9 @@
         "wikidata": [
           "babarc.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "babarc.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "babarc.hu"
@@ -8126,7 +8191,9 @@
         "wikidata": [
           "kenezlo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kenezlo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kenezlo.hu"
@@ -8306,7 +8373,9 @@
         "wikidata": [
           "kallosd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kallosd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kallosd.hu"
@@ -8556,7 +8625,9 @@
         "wikidata": [
           "kaptalantoti.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kaptalantoti.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kaptalantoti.hu"
@@ -8656,7 +8727,9 @@
         "wikidata": [
           "gegeny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gegeny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gegeny.hu"
@@ -8920,7 +8993,9 @@
         "wikidata": [
           "ladanybene.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ladanybene.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ladanybene.hu"
@@ -9044,7 +9119,9 @@
         "wikidata": [
           "balatonalmadi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonalmadi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonalmadi.hu"
@@ -9142,7 +9219,9 @@
         "wikidata": [
           "szajol.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szajol.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szajol.hu"
@@ -9288,7 +9367,9 @@
         "wikidata": [
           "bakonyszentlaszlo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bakonyszentlaszlo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bakonyszentlaszlo.hu"
@@ -9502,9 +9583,7 @@
         "wikidata": [
           "felsopakony.hu"
         ],
-        "wikidata_scrape": [
-          "felsopakony.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "felsopakony.hu"
@@ -9872,7 +9951,9 @@
         "wikidata": [
           "barbacs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "barbacs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "barbacs.hu"
@@ -10018,7 +10099,9 @@
         "wikidata": [
           "zsadany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zsadany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zsadany.hu"
@@ -10042,7 +10125,9 @@
         "wikidata": [
           "hosszupalyi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hosszupalyi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hosszupalyi.hu"
@@ -10140,7 +10225,9 @@
         "wikidata": [
           "nagyrabe.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagyrabe.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagyrabe.hu"
@@ -10188,7 +10275,9 @@
         "wikidata": [
           "bakonypoloske.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bakonypoloske.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bakonypoloske.hu"
@@ -10212,9 +10301,7 @@
         "wikidata": [
           "kozarmisleny.hu"
         ],
-        "wikidata_scrape": [
-          "kozarmisleny.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "kozarmisleny.hu"
@@ -10581,7 +10668,9 @@
         "wikidata": [
           "nagyecsed.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagyecsed.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagyecsed.hu"
@@ -10855,7 +10944,9 @@
         "wikidata": [
           "domos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "domos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "domos.hu"
@@ -10927,7 +11018,9 @@
         "wikidata": [
           "szecseny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szecseny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szecseny.hu"
@@ -10975,7 +11068,9 @@
         "wikidata": [
           "jobahaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "jobahaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "jobahaza.hu"
@@ -11212,7 +11307,9 @@
         "wikidata": [
           "diosjeno.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "diosjeno.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "diosjeno.hu"
@@ -11236,7 +11333,9 @@
         "wikidata": [
           "nagyszekely.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagyszekely.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagyszekely.hu"
@@ -11260,7 +11359,9 @@
         "wikidata": [
           "markotabodoge.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "markotabodoge.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "markotabodoge.hu"
@@ -11378,7 +11479,9 @@
         "wikidata": [
           "csobanka.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csobanka.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csobanka.hu"
@@ -11669,7 +11772,9 @@
         "wikidata": [
           "szokolya.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szokolya.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szokolya.hu"
@@ -11791,7 +11896,9 @@
         "wikidata": [
           "nagykaracsony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagykaracsony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagykaracsony.hu"
@@ -12084,7 +12191,9 @@
         "wikidata": [
           "hetvehely.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hetvehely.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hetvehely.hu"
@@ -12260,7 +12369,9 @@
         "wikidata": [
           "patak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "patak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "patak.hu"
@@ -12384,7 +12495,9 @@
         "wikidata": [
           "apc.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "apc.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "apc.hu"
@@ -12628,7 +12741,9 @@
         "wikidata": [
           "papkeszi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "papkeszi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "papkeszi.hu"
@@ -12652,7 +12767,10 @@
         "wikidata": [
           "mako.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mako.hu",
+          "makotavho.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mako.hu"
@@ -12796,7 +12914,9 @@
         "wikidata": [
           "kengyel.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kengyel.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kengyel.hu"
@@ -13093,7 +13213,9 @@
         "wikidata": [
           "szentlorinckata.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szentlorinckata.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szentlorinckata.hu"
@@ -13433,7 +13555,9 @@
         "wikidata": [
           "dombovar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dombovar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dombovar.hu"
@@ -13769,7 +13893,9 @@
         "wikidata": [
           "derekegyhaz.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "derekegyhaz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "derekegyhaz.hu"
@@ -13993,7 +14119,9 @@
         "wikidata": [
           "szentgal.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szentgal.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szentgal.hu"
@@ -14043,7 +14171,9 @@
         "wikidata": [
           "viszak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "viszak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "viszak.hu"
@@ -14331,7 +14461,9 @@
         "wikidata": [
           "szendro.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szendro.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szendro.hu"
@@ -14379,9 +14511,7 @@
         "wikidata": [
           "imrehegy.hu"
         ],
-        "wikidata_scrape": [
-          "imrehegy.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "imrehegy.hu"
@@ -14523,7 +14653,9 @@
         "wikidata": [
           "dregelypalank.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dregelypalank.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dregelypalank.hu"
@@ -14547,7 +14679,9 @@
         "wikidata": [
           "tard.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tard.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tard.hu"
@@ -14837,7 +14971,9 @@
         "wikidata": [
           "bakonya.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bakonya.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bakonya.hu"
@@ -14885,7 +15021,9 @@
         "wikidata": [
           "hodmezovasarhely.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hodmezovasarhely.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hodmezovasarhely.hu"
@@ -14983,7 +15121,9 @@
         "wikidata": [
           "harkakotony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "harkakotony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "harkakotony.hu"
@@ -15154,7 +15294,9 @@
         "wikidata": [
           "napkor.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "napkor.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "napkor.hu"
@@ -15382,7 +15524,9 @@
         "wikidata": [
           "sirok.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "sirok.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "sirok.hu"
@@ -15554,7 +15698,9 @@
         "wikidata": [
           "tab.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tab-ph.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tab.hu"
@@ -15774,7 +15920,9 @@
         "wikidata": [
           "sutto.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "sutto.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "sutto.hu"
@@ -15798,7 +15946,9 @@
         "wikidata": [
           "bacsszentgyorgy.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bacsszentgyorgy.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bacsszentgyorgy.hu"
@@ -15822,7 +15972,9 @@
         "wikidata": [
           "bussu.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bussu.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bussu.hu"
@@ -16076,7 +16228,9 @@
         "wikidata": [
           "felsoszentmarton.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "felsoszentmarton.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "felsoszentmarton.hu"
@@ -16783,7 +16937,9 @@
         "wikidata": [
           "vacszentlaszlo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "vacszentlaszlo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "vacszentlaszlo.hu"
@@ -17050,7 +17206,10 @@
         "wikidata": [
           "foldeak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "foldeak.hu",
+          "foldeakimuvhaz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "foldeak.hu"
@@ -17124,7 +17283,9 @@
         "wikidata": [
           "dabas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dabas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dabas.hu"
@@ -17139,13 +17300,15 @@
       "name": "Nyírtét",
       "county": "Szabolcs-Szatmár-Bereg",
       "domain": "nyirtet.hu",
-      "source": "guess",
-      "confidence": "low",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
         "override_redirect": [],
-        "wikidata": [],
+        "wikidata": [
+          "nyirtet.hu"
+        ],
         "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
@@ -17154,9 +17317,7 @@
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "guess_only"
-      ]
+      "flags": []
     },
     "09265": {
       "id": "09265",
@@ -17336,7 +17497,9 @@
         "wikidata": [
           "kiskoros.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kiskoros.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kiskoros.hu"
@@ -17585,7 +17748,8 @@
         "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
-          "gomba.hu"
+          "gomba.hu",
+          "gombavaros.hu"
         ],
         "guess_scrape": [],
         "guess_redirect": []
@@ -17626,7 +17790,9 @@
         "wikidata": [
           "janoshalma.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "janoshalma.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "janoshalma.hu"
@@ -17650,9 +17816,7 @@
         "wikidata": [
           "nagyhegyes.hu"
         ],
-        "wikidata_scrape": [
-          "nagyhegyes.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "nagyhegyes.hu"
@@ -18171,7 +18335,9 @@
         "wikidata": [
           "halasztelek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "halasztelek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "halasztelek.hu"
@@ -18268,7 +18434,9 @@
         "guess": [
           "vigantpetend.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "vigantpetend.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -18644,7 +18812,9 @@
         "wikidata": [
           "borsosbereny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "borsosbereny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "borsosbereny.hu"
@@ -18720,7 +18890,9 @@
         "wikidata": [
           "hetes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hetes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hetes.hu"
@@ -18744,7 +18916,9 @@
         "wikidata": [
           "kenyeri.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kenyeri.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kenyeri.hu"
@@ -18866,7 +19040,9 @@
         "wikidata": [
           "szucsi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szucsi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szucsi.hu"
@@ -18993,7 +19169,9 @@
         "guess": [
           "liptod.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "liptod.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -19141,7 +19319,9 @@
         "guess": [
           "orvenyes.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "orvenyes.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -19564,7 +19744,9 @@
         "wikidata": [
           "se.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "se.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "se.hu"
@@ -19686,7 +19868,9 @@
         "wikidata": [
           "vizslas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "vizslas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "vizslas.hu"
@@ -19734,7 +19918,9 @@
         "wikidata": [
           "zalakomar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zalakomar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalakomar.hu"
@@ -20048,7 +20234,9 @@
         "wikidata": [
           "csaszartoltes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csaszartoltes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csaszartoltes.hu"
@@ -20096,7 +20284,9 @@
         "wikidata": [
           "dorog.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dorog.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dorog.hu"
@@ -20120,7 +20310,9 @@
         "wikidata": [
           "bodrog.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bodrog.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bodrog.hu"
@@ -20192,7 +20384,9 @@
         "wikidata": [
           "davod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "davod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "davod.hu"
@@ -20336,7 +20530,9 @@
         "wikidata": [
           "rumkozseg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "rumkozseg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "rumkozseg.hu"
@@ -20619,7 +20815,9 @@
         "wikidata": [
           "bacsalmas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bacsalmas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bacsalmas.hu"
@@ -21114,7 +21312,9 @@
         "wikidata": [
           "maglod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "maglod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "maglod.hu"
@@ -21679,7 +21879,9 @@
         "wikidata": [
           "kethely.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kethely.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kethely.hu"
@@ -21945,9 +22147,7 @@
         "wikidata": [
           "katymar.hu"
         ],
-        "wikidata_scrape": [
-          "katymar.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "katymar.hu"
@@ -22043,7 +22243,9 @@
         "wikidata": [
           "mezokeresztes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mezokeresztes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mezokeresztes.hu"
@@ -22621,9 +22823,7 @@
         "wikidata": [
           "petomihalyfa.hu"
         ],
-        "wikidata_scrape": [
-          "petomihalyfa.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "petomihalyfa.hu"
@@ -22674,7 +22874,9 @@
         "guess": [
           "piliny.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "piliny.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -22695,7 +22897,9 @@
         "wikidata": [
           "dunaszentbenedek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dunaszentbenedek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dunaszentbenedek.hu"
@@ -23104,7 +23308,10 @@
         "wikidata": [
           "zalakaros.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hellozalakaros.hu",
+          "zalakaros.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalakaros.hu"
@@ -23154,9 +23361,7 @@
         "wikidata": [
           "vindornyaszolos.hu"
         ],
-        "wikidata_scrape": [
-          "vindornyaszolos.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "vindornyaszolos.hu"
@@ -23602,7 +23807,9 @@
         "wikidata": [
           "murony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "murony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "murony.hu"
@@ -23840,7 +24047,9 @@
         "wikidata": [
           "gelse.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gelse.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gelse.hu"
@@ -23988,7 +24197,9 @@
         "wikidata": [
           "csepreg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csepreg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csepreg.hu"
@@ -24038,7 +24249,9 @@
         "wikidata": [
           "patca.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "patca.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "patca.hu"
@@ -24422,7 +24635,9 @@
         "wikidata": [
           "gyorkony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyorkony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyorkony.hu"
@@ -24580,7 +24795,9 @@
         "wikidata": [
           "kistokaj.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kistokaj.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kistokaj.hu"
@@ -24728,7 +24945,9 @@
         "wikidata": [
           "csokmo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csokmo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csokmo.hu"
@@ -25198,7 +25417,9 @@
         "wikidata": [
           "zalahalap.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zalahalap.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalahalap.hu"
@@ -25320,7 +25541,9 @@
         "wikidata": [
           "haromhuta.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "haromhuta.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "haromhuta.hu"
@@ -25418,7 +25641,9 @@
         "wikidata": [
           "ganna.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ganna.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ganna.hu"
@@ -25445,7 +25670,9 @@
         "guess": [
           "gerde.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "gerde.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -25551,7 +25778,9 @@
           "opusztaszer.hu",
           "opusztaszerkozseg.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "opusztaszer.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -25784,7 +26013,10 @@
         "wikidata": [
           "ullo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ullo.hu",
+          "ullohszk.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ullo.hu"
@@ -25932,7 +26164,9 @@
         "wikidata": [
           "nyul.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nyul.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nyul.hu"
@@ -26100,7 +26334,9 @@
         "wikidata": [
           "kondorfa.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kondorfa.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kondorfa.hu"
@@ -26236,9 +26472,9 @@
       "id": "13091",
       "name": "Zalaszentmárton",
       "county": "Zala",
-      "domain": "zalaszentmarton.hu",
-      "source": "guess",
-      "confidence": "low",
+      "domain": "",
+      "source": "none",
+      "confidence": "none",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
@@ -26246,15 +26482,11 @@
         "wikidata": [],
         "wikidata_scrape": [],
         "wikidata_redirect": [],
-        "guess": [
-          "zalaszentmarton.hu"
-        ],
+        "guess": [],
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "guess_only"
-      ]
+      "flags": []
     },
     "13116": {
       "id": "13116",
@@ -26318,7 +26550,9 @@
         "wikidata": [
           "golop.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "golop.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "golop.hu"
@@ -26610,7 +26844,9 @@
         "wikidata": [
           "szabadegyhaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szabadegyhaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szabadegyhaza.hu"
@@ -26706,7 +26942,9 @@
         "wikidata": [
           "galgagyork.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "galgagyork.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "galgagyork.hu"
@@ -26733,7 +26971,9 @@
         "guess": [
           "zalaszentlorinc.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "zalaszentlorinc.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -26754,7 +26994,9 @@
         "wikidata": [
           "bicserd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bicserd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bicserd.hu"
@@ -26894,7 +27136,9 @@
         "wikidata": [
           "kazsmark.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kazsmark.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kazsmark.hu"
@@ -26918,7 +27162,9 @@
         "wikidata": [
           "domaszek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "domaszek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "domaszek.hu"
@@ -27142,7 +27388,9 @@
         "wikidata": [
           "erdokertes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "erdokertes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "erdokertes.hu"
@@ -27166,7 +27414,9 @@
         "wikidata": [
           "erzsebet.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "erzsebetikoh.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "erzsebet.hu",
@@ -27361,9 +27611,7 @@
         "wikidata": [
           "budapest.hu"
         ],
-        "wikidata_scrape": [
-          "budapest.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "budapest.hu"
@@ -27413,7 +27661,9 @@
         "wikidata": [
           "bukkabrany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bukkabrany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bukkabrany.hu"
@@ -27737,7 +27987,9 @@
         "wikidata": [
           "zalavar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zalavar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalavar.hu"
@@ -28172,7 +28424,9 @@
         "wikidata": [
           "magyarkeresztur.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "magyarkeresztur.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "magyarkeresztur.hu"
@@ -28558,7 +28812,9 @@
         "wikidata": [
           "tiszaug.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tiszaug.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tiszaug.hu"
@@ -28751,7 +29007,9 @@
         "wikidata": [
           "band.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "band.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "band.hu"
@@ -28873,7 +29131,9 @@
         "wikidata": [
           "szentmargitfalva.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szentmargitfalva.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szentmargitfalva.hu"
@@ -29453,7 +29713,9 @@
         "wikidata": [
           "tabajd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tabajd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tabajd.hu"
@@ -29525,7 +29787,9 @@
         "wikidata": [
           "ozd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ozd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ozd.hu"
@@ -29649,7 +29913,9 @@
         "wikidata": [
           "tatahaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tatahaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tatahaza.hu"
@@ -29663,7 +29929,7 @@
       "id": "14553",
       "name": "Kapolcs",
       "county": "Veszprém",
-      "domain": "kapolcs-onkormanyzat.hu",
+      "domain": "kapolcs.hu",
       "source": "source_agreement",
       "confidence": "high",
       "sources_detail": {
@@ -29673,7 +29939,9 @@
         "wikidata": [
           "kapolcs-onkormanyzat.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kapolcs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kapolcs-onkormanyzat.hu",
@@ -29921,7 +30189,9 @@
         "wikidata": [
           "nagynyarad.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagynyarad.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagynyarad.hu"
@@ -29945,7 +30215,9 @@
         "wikidata": [
           "pilismarot.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pilismarot.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pilismarot.hu"
@@ -30170,7 +30442,9 @@
         "wikidata": [
           "noszlop.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "noszlop.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "noszlop.hu"
@@ -30318,7 +30592,9 @@
         "wikidata": [
           "bonyhadvarasd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bonyhadvarasd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bonyhadvarasd.hu"
@@ -30368,7 +30644,9 @@
         "wikidata": [
           "zagyvarekas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zagyvarekas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zagyvarekas.hu"
@@ -30515,7 +30793,9 @@
         "wikidata": [
           "tomor.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tomor.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tomor.hu"
@@ -30613,7 +30893,9 @@
         "wikidata": [
           "bodony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bodony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bodony.hu"
@@ -30831,7 +31113,9 @@
         "wikidata": [
           "paty.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "paty.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "paty.hu"
@@ -30879,7 +31163,9 @@
         "wikidata": [
           "babot.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "babot.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "babot.hu"
@@ -31135,7 +31421,9 @@
         "wikidata": [
           "zsana.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zsana.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zsana.hu"
@@ -31183,7 +31471,9 @@
         "wikidata": [
           "alcsutdoboz.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "alcsutdoboz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "alcsutdoboz.hu"
@@ -31347,7 +31637,9 @@
         "wikidata": [
           "pusztamonostor.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pusztamonostor.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pusztamonostor.hu"
@@ -31371,7 +31663,9 @@
         "wikidata": [
           "labatlan.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "labatlan.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "labatlan.hu"
@@ -31705,7 +31999,9 @@
         "wikidata": [
           "pirto.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pirto.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pirto.hu"
@@ -31773,7 +32069,9 @@
         "wikidata": [
           "rabatamasi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "rabatamasi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "rabatamasi.hu"
@@ -31973,7 +32271,9 @@
         "wikidata": [
           "bosarkany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bosarkany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bosarkany.hu"
@@ -32115,7 +32415,9 @@
         "wikidata": [
           "balatonudvari.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonudvari.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonudvari.hu"
@@ -32139,7 +32441,9 @@
         "wikidata": [
           "nagykoru.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagykoru.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagykoru.hu"
@@ -32237,7 +32541,9 @@
         "wikidata": [
           "zalkod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zalkod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalkod.hu"
@@ -32261,7 +32567,9 @@
         "wikidata": [
           "somogysamson.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "somogysamson.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "somogysamson.hu"
@@ -32330,7 +32638,9 @@
         "wikidata": [
           "gyorszemere.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyorszemere.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyorszemere.hu"
@@ -32428,7 +32738,9 @@
         "wikidata": [
           "csikeria.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csikeria.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csikeria.hu"
@@ -32544,7 +32856,9 @@
         "wikidata": [
           "egyek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "egyek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "egyek.hu"
@@ -32624,7 +32938,9 @@
         "guess": [
           "barnag.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "barnag.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -32793,7 +33109,9 @@
         "wikidata": [
           "zengovarkony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zengovarkony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zengovarkony.hu"
@@ -32817,7 +33135,9 @@
         "wikidata": [
           "lak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "lak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "lak.hu"
@@ -32841,7 +33161,9 @@
         "wikidata": [
           "szentlorinc.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szentlorinc.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szentlorinc.hu"
@@ -33011,7 +33333,9 @@
         "wikidata": [
           "gonc.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gonc.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gonc.hu"
@@ -33210,7 +33534,9 @@
         "wikidata": [
           "melykut.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "melykut.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "melykut.hu"
@@ -33363,16 +33689,14 @@
       "id": "16081",
       "name": "Kispáli",
       "county": "Zala",
-      "domain": "kispali.eu",
-      "source": "wikidata",
+      "domain": "kispali.hu",
+      "source": "guess",
       "confidence": "low",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
         "override_redirect": [],
-        "wikidata": [
-          "kispali.eu"
-        ],
+        "wikidata": [],
         "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
@@ -33382,7 +33706,7 @@
         "guess_redirect": []
       },
       "flags": [
-        "single_source"
+        "guess_only"
       ]
     },
     "16090": {
@@ -33612,7 +33936,9 @@
         "wikidata": [
           "aszod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "aszod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "aszod.hu"
@@ -33710,7 +34036,9 @@
         "wikidata": [
           "lipot.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "lipot.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "lipot.hu"
@@ -34307,7 +34635,9 @@
         "wikidata": [
           "balatonujlak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonujlak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonujlak.hu"
@@ -34595,7 +34925,9 @@
         "wikidata": [
           "oroszi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "oroszi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "oroszi.hu"
@@ -34660,13 +34992,15 @@
       "name": "Magy",
       "county": "Szabolcs-Szatmár-Bereg",
       "domain": "magy.hu",
-      "source": "guess",
-      "confidence": "low",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
         "override_redirect": [],
-        "wikidata": [],
+        "wikidata": [
+          "magy.hu"
+        ],
         "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
@@ -34675,9 +35009,7 @@
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "guess_only"
-      ]
+      "flags": []
     },
     "16638": {
       "id": "16638",
@@ -34717,7 +35049,9 @@
         "wikidata": [
           "fegyvernek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "fegyvernek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "fegyvernek.hu"
@@ -34942,7 +35276,9 @@
         "wikidata": [
           "tarany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tarany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tarany.hu"
@@ -35090,7 +35426,9 @@
         "wikidata": [
           "borsodszirak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "borsodszirak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "borsodszirak.hu"
@@ -35784,7 +36122,9 @@
         "wikidata": [
           "peneszlek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "peneszlek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "peneszlek.hu"
@@ -35908,7 +36248,9 @@
         "wikidata": [
           "hernadszentandras.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hernadszentandras.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hernadszentandras.hu"
@@ -36128,13 +36470,15 @@
       "name": "Petneháza",
       "county": "Szabolcs-Szatmár-Bereg",
       "domain": "petnehaza.hu",
-      "source": "guess",
-      "confidence": "low",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
         "override_redirect": [],
-        "wikidata": [],
+        "wikidata": [
+          "petnehaza.hu"
+        ],
         "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
@@ -36143,9 +36487,7 @@
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "guess_only"
-      ]
+      "flags": []
     },
     "17233": {
       "id": "17233",
@@ -36266,7 +36608,9 @@
         "wikidata": [
           "juta.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "juta.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "juta.hu"
@@ -36388,7 +36732,9 @@
         "wikidata": [
           "taliandorogd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "taliandorogd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "taliandorogd.hu"
@@ -36412,7 +36758,9 @@
         "wikidata": [
           "kisber.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kisber.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kisber.hu"
@@ -36538,7 +36886,9 @@
         "wikidata": [
           "alsomocsolad.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "alsomocsolad.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "alsomocsolad.hu"
@@ -36884,7 +37234,9 @@
         "wikidata": [
           "gyongyoshalasz.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyongyoshalasz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyongyoshalasz.hu"
@@ -37227,7 +37579,9 @@
         "wikidata": [
           "lajosmizse.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "lajosmizse.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "lajosmizse.hu"
@@ -37275,7 +37629,9 @@
         "wikidata": [
           "tiszasuly.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tiszasuly.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tiszasuly.hu"
@@ -37425,9 +37781,7 @@
         "wikidata": [
           "zsombo.hu"
         ],
-        "wikidata_scrape": [
-          "zsombo.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "zsombo.hu"
@@ -37595,7 +37949,9 @@
         "wikidata": [
           "fazekasboda.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "fazekasboda.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "fazekasboda.hu"
@@ -37693,7 +38049,9 @@
         "wikidata": [
           "lesencetomaj.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "lesencetomaj.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "lesencetomaj.hu"
@@ -37963,7 +38321,9 @@
         "wikidata": [
           "andornaktalya.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "andornaktalya.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "andornaktalya.hu"
@@ -38055,7 +38415,9 @@
         "wikidata": [
           "hegyhatszentjakab.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hegyhatszentjakab.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hegyhatszentjakab.hu"
@@ -38079,7 +38441,9 @@
         "wikidata": [
           "karmacs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "karmacs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "karmacs.hu"
@@ -38335,7 +38699,9 @@
         "wikidata": [
           "keleshalom.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "keleshalom.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "keleshalom.hu"
@@ -38359,7 +38725,9 @@
         "wikidata": [
           "gaborjan.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gaborjan.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gaborjan.hu"
@@ -38433,7 +38801,9 @@
         "wikidata": [
           "jaszbereny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "jaszbereny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "jaszbereny.hu"
@@ -38946,7 +39316,9 @@
         "wikidata": [
           "varbalog.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "varbalog.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "varbalog.hu"
@@ -39234,7 +39606,9 @@
         "wikidata": [
           "sajopalfala.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "sajopalfala.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "sajopalfala.hu"
@@ -39330,7 +39704,9 @@
         "wikidata": [
           "acsa.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "acsa.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "acsa.hu"
@@ -39639,7 +40015,9 @@
         "wikidata": [
           "erdosmecske.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "erdosmecske.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "erdosmecske.hu"
@@ -39872,7 +40250,9 @@
         "wikidata": [
           "noszvaj.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "noszvaj.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "noszvaj.hu"
@@ -39920,7 +40300,9 @@
         "wikidata": [
           "kisdombegyhaz.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kisdombegyhaz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kisdombegyhaz.hu"
@@ -40913,7 +41295,9 @@
         "wikidata": [
           "okany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "okany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "okany.hu"
@@ -41177,7 +41561,9 @@
         "wikidata": [
           "babolna.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "babolna.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "babolna.hu"
@@ -41201,7 +41587,9 @@
         "wikidata": [
           "matranovak.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "matranovak.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "matranovak.hu",
@@ -41349,7 +41737,9 @@
         "wikidata": [
           "mezokovesd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mezokovesd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mezokovesd.hu"
@@ -41515,7 +41905,9 @@
         "wikidata": [
           "galgaheviz.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "galgaheviz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "galgaheviz.hu"
@@ -41589,7 +41981,9 @@
         "wikidata": [
           "szakmar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szakmar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szakmar.hu"
@@ -42201,7 +42595,9 @@
         "wikidata": [
           "kecel.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kecel.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kecel.hu"
@@ -42503,7 +42899,9 @@
         "wikidata": [
           "pusztahencse.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pusztahencse.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pusztahencse.hu"
@@ -42749,7 +43147,9 @@
         "wikidata": [
           "barna.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "barna.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "barna.hu"
@@ -42819,7 +43219,9 @@
         "wikidata": [
           "matramindszent.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "matramindszent.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "matramindszent.hu"
@@ -43273,7 +43675,9 @@
         "wikidata": [
           "vemend.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "vemend.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "vemend.hu"
@@ -43581,7 +43985,9 @@
         "wikidata": [
           "gyomore.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyomore.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyomore.hu"
@@ -43682,7 +44088,9 @@
         "wikidata": [
           "tiszainoka.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tiszainoka.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tiszainoka.hu"
@@ -43706,7 +44114,9 @@
         "wikidata": [
           "csanadapaca.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csanadapaca.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csanadapaca.hu"
@@ -43802,7 +44212,10 @@
         "wikidata": [
           "eger.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mediaeger.hu",
+          "ph.eger.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "eger.hu"
@@ -44075,7 +44488,9 @@
         "wikidata": [
           "ikreny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ikreny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ikreny.hu"
@@ -44099,7 +44514,9 @@
         "wikidata": [
           "bucsuszentlaszlo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bucsuszentlaszlo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bucsuszentlaszlo.hu"
@@ -44356,7 +44773,9 @@
         "wikidata": [
           "sajovamos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "sajovamos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "sajovamos.hu"
@@ -44432,7 +44851,9 @@
         "wikidata": [
           "medgyesbodzas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "medgyesbodzas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "medgyesbodzas.hu"
@@ -45145,7 +45566,9 @@
         "wikidata": [
           "dunaszeg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dunaszeg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dunaszeg.hu"
@@ -45444,7 +45867,9 @@
         "wikidata": [
           "lokoshaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "lokoshaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "lokoshaza.hu"
@@ -45468,7 +45893,9 @@
         "wikidata": [
           "karcsa.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "karcsa.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "karcsa.hu"
@@ -45564,7 +45991,9 @@
         "wikidata": [
           "szentpeterfa.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szentpeterfa.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szentpeterfa.hu"
@@ -45614,7 +46043,9 @@
         "wikidata": [
           "prugy.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "prugy.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "prugy.hu"
@@ -45739,7 +46170,9 @@
         "wikidata": [
           "balatonszentgyorgy.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonszentgyorgy.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonszentgyorgy.hu"
@@ -45963,7 +46396,9 @@
         "wikidata": [
           "ulles.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ulles.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ulles.hu"
@@ -46216,7 +46651,9 @@
         "guess": [
           "pecsbagota.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "pecsbagota.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -46315,7 +46752,9 @@
         "wikidata": [
           "mindszent.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mindszent.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mindszent.hu"
@@ -46387,7 +46826,9 @@
         "wikidata": [
           "ersekvadkert.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ersekvadkert.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ersekvadkert.hu"
@@ -46483,7 +46924,9 @@
         "wikidata": [
           "zomba.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zomba.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zomba.hu"
@@ -46553,7 +46996,9 @@
         "wikidata": [
           "nagybajom.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagybajom.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagybajom.hu"
@@ -46767,7 +47212,9 @@
         "wikidata": [
           "tarcal.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tarcal.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tarcal.hu"
@@ -46815,7 +47262,9 @@
         "wikidata": [
           "megyaszo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "megyaszo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "megyaszo.hu"
@@ -46863,7 +47312,10 @@
         "wikidata": [
           "pazmand.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pazmand.hu",
+          "pazmandmail.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pazmand.hu",
@@ -47114,7 +47566,9 @@
         "wikidata": [
           "szeghalom.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szeghalom.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szeghalom.hu"
@@ -47475,7 +47929,9 @@
         "wikidata": [
           "zsambok.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zsambok.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zsambok.hu"
@@ -47572,7 +48028,9 @@
         "guess": [
           "veleny.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "veleny.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -47711,7 +48169,9 @@
         "wikidata": [
           "dombiratos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dombiratos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dombiratos.hu"
@@ -48074,7 +48534,9 @@
         "wikidata": [
           "ofeherto.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ofeherto.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ofeherto.hu"
@@ -48176,7 +48638,9 @@
         "wikidata": [
           "badacsonytomaj.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "badacsonytomaj.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "badacsonytomaj.hu"
@@ -48901,8 +49365,12 @@
         "wikidata": [
           "mariahalom.hu"
         ],
-        "wikidata_scrape": [],
-        "wikidata_redirect": [],
+        "wikidata_scrape": [
+          "mariahalom.hu"
+        ],
+        "wikidata_redirect": [
+          "mariahalom.info"
+        ],
         "guess": [
           "mariahalom.hu"
         ],
@@ -49013,7 +49481,9 @@
         "wikidata": [
           "letkes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "letkes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "letkes.hu"
@@ -49177,7 +49647,9 @@
         "wikidata": [
           "kaszaper.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kaszaper.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kaszaper.hu"
@@ -49327,7 +49799,9 @@
         "wikidata": [
           "bakonyszentkiraly.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bakonyszentkiraly.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bakonyszentkiraly.hu"
@@ -49620,7 +50094,9 @@
         "wikidata": [
           "zalaszabar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zalaszabar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalaszabar.hu"
@@ -49834,7 +50310,9 @@
         "wikidata": [
           "nyaregyhaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nyaregyhaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nyaregyhaza.hu"
@@ -49906,7 +50384,9 @@
         "wikidata": [
           "oroshaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "oroshaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "oroshaza.hu"
@@ -50152,7 +50632,9 @@
         "wikidata": [
           "bukkosd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bukkosd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bukkosd.hu"
@@ -50346,7 +50828,9 @@
         "wikidata": [
           "fabianhaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "fabianhaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "fabianhaza.hu"
@@ -50370,7 +50854,9 @@
         "wikidata": [
           "nyirmeggyes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nyirmeggyes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nyirmeggyes.hu"
@@ -50733,7 +51219,9 @@
         "wikidata": [
           "hantos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hantos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hantos.hu"
@@ -50832,7 +51320,9 @@
         "guess": [
           "budakalasz.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "budakalasz.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -50878,9 +51368,7 @@
         "wikidata": [
           "pasztori.hu"
         ],
-        "wikidata_scrape": [
-          "pasztori.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "pasztori.hu"
@@ -51816,7 +52304,9 @@
         "wikidata": [
           "sonkad.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "sonkad.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "sonkad.hu"
@@ -51840,7 +52330,9 @@
         "wikidata": [
           "rezi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "rezinet.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "rezi.hu"
@@ -52209,7 +52701,9 @@
         "wikidata": [
           "monostorapati.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "monostorapati.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "monostorapati.hu"
@@ -52528,7 +53022,9 @@
         "wikidata": [
           "tereske.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tereske.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tereske.hu"
@@ -52678,7 +53174,9 @@
         "wikidata": [
           "erdotelek.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "erdotelek.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "erdotelek.hu"
@@ -52728,7 +53226,10 @@
         "wikidata": [
           "mikohaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mikohaza.hu",
+          "mikohaza.info"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mikohaza.hu"
@@ -52870,9 +53371,7 @@
         "wikidata": [
           "csokoly.hu"
         ],
-        "wikidata_scrape": [
-          "csokoly.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "csokoly.hu"
@@ -53161,7 +53660,9 @@
         "wikidata": [
           "doroghaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "doroghaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "doroghaza.hu"
@@ -53353,7 +53854,9 @@
         "wikidata": [
           "ecser.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ecser.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ecser.hu"
@@ -53427,7 +53930,9 @@
         "wikidata": [
           "tiszaalpar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tiszaalpar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tiszaalpar.hu"
@@ -53741,7 +54246,9 @@
         "wikidata": [
           "kospallag.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kospallag.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kospallag.hu"
@@ -53971,7 +54478,9 @@
         "wikidata": [
           "nagykallo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagykallo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagykallo.hu"
@@ -54043,7 +54552,9 @@
         "wikidata": [
           "devavanya.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "devavanya.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "devavanya.hu"
@@ -54259,7 +54770,9 @@
         "wikidata": [
           "balatonszarszo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonszarszo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonszarszo.hu"
@@ -54441,9 +54954,9 @@
       "id": "24998",
       "name": "Tázlár",
       "county": "Bács-Kiskun",
-      "domain": "tazlar.net",
-      "source": "wikidata",
-      "confidence": "low",
+      "domain": "tazlar.hu",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
@@ -54451,7 +54964,9 @@
         "wikidata": [
           "tazlar.net"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tazlar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tazlar.hu"
@@ -54459,9 +54974,7 @@
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "single_source"
-      ]
+      "flags": []
     },
     "25007": {
       "id": "25007",
@@ -54788,7 +55301,9 @@
         "wikidata": [
           "esztergom.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "esztergom.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "esztergom.hu"
@@ -54812,7 +55327,9 @@
         "wikidata": [
           "sarosd.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "sarosd.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "sarosd.hu"
@@ -54962,7 +55479,9 @@
         "wikidata": [
           "nagytevel.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagytevel.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagytevel.hu"
@@ -55110,9 +55629,7 @@
         "wikidata": [
           "alattyan.hu"
         ],
-        "wikidata_scrape": [
-          "alattyan.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "alattyan.hu"
@@ -55136,7 +55653,10 @@
         "wikidata": [
           "tolna.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tolna.gov.hu",
+          "tolna.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tolna.hu"
@@ -55330,7 +55850,9 @@
         "wikidata": [
           "dunabogdany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dunabogdany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dunabogdany.hu"
@@ -55810,9 +56332,7 @@
         "wikidata": [
           "cserepvaralja.hu"
         ],
-        "wikidata_scrape": [
-          "cserepvaralja.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "cserepvaralja.hu"
@@ -55836,7 +56356,10 @@
         "wikidata": [
           "gyor.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyor-ph.hu",
+          "gyorszol.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyor.hu"
@@ -56053,7 +56576,9 @@
         "wikidata": [
           "hidvegardo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hidvegardo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hidvegardo.hu"
@@ -56367,7 +56892,9 @@
         "wikidata": [
           "hegymagas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "hegymagas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "hegymagas.hu"
@@ -56455,7 +56982,9 @@
         "wikidata": [
           "rigacs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "rigacs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "rigacs.hu"
@@ -56915,7 +57444,9 @@
         "wikidata": [
           "kekkut.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kekkut.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kekkut.hu"
@@ -57081,7 +57612,9 @@
         "wikidata": [
           "csegold.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csegold.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csegold.hu"
@@ -57566,7 +58099,9 @@
         "wikidata": [
           "inke.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "inke.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "inke.hu"
@@ -57947,7 +58482,9 @@
         "wikidata": [
           "balatonmagyarod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balatonmagyarod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balatonmagyarod.hu"
@@ -58065,9 +58602,7 @@
         "wikidata": [
           "olaszfalu.hu"
         ],
-        "wikidata_scrape": [
-          "olaszfalu.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "olaszfalu.hu"
@@ -58211,7 +58746,9 @@
         "wikidata": [
           "szigetvar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szigetvar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szigetvar.hu"
@@ -58307,7 +58844,9 @@
         "wikidata": [
           "ujfeherto.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ujfeherto.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ujfeherto.hu"
@@ -58527,7 +59066,9 @@
         "wikidata": [
           "csorvas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csorvas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csorvas.hu"
@@ -58716,7 +59257,9 @@
         "guess": [
           "varda.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "varda.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -58787,7 +59330,9 @@
         "wikidata": [
           "vecses.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "vecses.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "vecses.hu"
@@ -58923,7 +59468,9 @@
         "wikidata": [
           "nagyfuged.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagyfuged.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagyfuged.hu"
@@ -59093,7 +59640,9 @@
         "wikidata": [
           "balkany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "balkany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "balkany.hu"
@@ -59120,7 +59669,9 @@
         "guess": [
           "magyargec.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "magyargec.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -59619,7 +60170,9 @@
         "wikidata": [
           "nagykonyi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagykonyi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagykonyi.hu"
@@ -59839,7 +60392,9 @@
         "wikidata": [
           "csomend.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csomend.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csomend.hu"
@@ -60698,7 +61253,9 @@
         "wikidata": [
           "uny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "uny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "uny.hu"
@@ -61090,7 +61647,9 @@
         "wikidata": [
           "szergeny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szergeny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szergeny.hu"
@@ -61228,9 +61787,9 @@
       "id": "27854",
       "name": "Szolnok",
       "county": "Jász-Nagykun-Szolnok",
-      "domain": "ph.szolnok.hu",
-      "source": "wikidata_scrape",
-      "confidence": "low",
+      "domain": "szolnok.hu",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
@@ -61239,16 +61798,16 @@
         "wikidata_scrape": [
           "ph.szolnok.hu"
         ],
-        "wikidata_redirect": [],
+        "wikidata_redirect": [
+          "szolnok.hu"
+        ],
         "guess": [
           "szolnok.hu"
         ],
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "single_source"
-      ]
+      "flags": []
     },
     "27863": {
       "id": "27863",
@@ -61290,7 +61849,9 @@
         "wikidata": [
           "abony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "abony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "abony.hu"
@@ -61338,7 +61899,9 @@
         "wikidata": [
           "bukkaranyos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bukkaranyos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bukkaranyos.hu"
@@ -61362,7 +61925,9 @@
         "wikidata": [
           "magyarbanhegyes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "magyarbanhegyes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "magyarbanhegyes.hu"
@@ -61533,7 +62098,9 @@
         "guess": [
           "nagyalasony.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "nagyalasony.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -61944,7 +62511,9 @@
         "wikidata": [
           "kisszallas.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kisszallas.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kisszallas.hu"
@@ -62021,7 +62590,9 @@
         "guess": [
           "szuha.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "szuha.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -62090,7 +62661,9 @@
         "wikidata": [
           "turkeve.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "turkeve.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "turkeve.hu"
@@ -62114,7 +62687,9 @@
         "wikidata": [
           "dabrony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dabrony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dabrony.hu"
@@ -62469,7 +63044,9 @@
         "wikidata": [
           "kazar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kazar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kazar.hu"
@@ -62541,7 +63118,9 @@
         "wikidata": [
           "visegrad.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "visegrad.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "visegrad.hu"
@@ -62830,7 +63409,9 @@
         "wikidata": [
           "vajszlo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "vajszlo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "vajszlo.hu"
@@ -62998,7 +63579,9 @@
         "wikidata": [
           "dravaszabolcs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "dravaszabolcs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "dravaszabolcs.hu"
@@ -63193,7 +63776,9 @@
         "guess": [
           "tiszaigar.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "tiszaigar.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -63214,7 +63799,9 @@
         "wikidata": [
           "szabadbattyan.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szabadbattyan.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szabadbattyan.hu"
@@ -63946,7 +64533,9 @@
         "wikidata": [
           "pusztaszabolcs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pusztaszabolcs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pusztaszabolcs.hu"
@@ -64011,14 +64600,16 @@
       "name": "Mátraszentimre",
       "county": "Heves",
       "domain": "matraszentimre.hu",
-      "source": "guess",
-      "confidence": "low",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
         "override_redirect": [],
         "wikidata": [],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "matraszentimre.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "matraszentimre.hu"
@@ -64026,9 +64617,7 @@
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "guess_only"
-      ]
+      "flags": []
     },
     "29054": {
       "id": "29054",
@@ -64164,7 +64753,9 @@
         "wikidata": [
           "baks.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "baks.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "baks.hu"
@@ -64308,7 +64899,9 @@
         "wikidata": [
           "paka.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "paka.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "paka.hu"
@@ -64476,9 +65069,7 @@
         "wikidata": [
           "dalmand.hu"
         ],
-        "wikidata_scrape": [
-          "dalmand.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "dalmand.hu"
@@ -64522,7 +65113,9 @@
         "wikidata": [
           "tac.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tac.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tac.hu"
@@ -64639,7 +65232,9 @@
         "guess": [
           "ipolyvece.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "ipolyvece.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -64906,7 +65501,9 @@
         "wikidata": [
           "notincs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "notincs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "notincs.hu"
@@ -65321,7 +65918,9 @@
         "wikidata": [
           "almaskamaras.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "almaskamaras.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "almaskamaras.hu"
@@ -65472,7 +66071,9 @@
         "guess": [
           "pat.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "pat.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -66653,7 +67254,9 @@
         "wikidata": [
           "korosujfalu.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "korosujfalu.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "korosujfalu.hu"
@@ -66751,7 +67354,9 @@
         "wikidata": [
           "borsodszentgyorgy.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "borsodszentgyorgy.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "borsodszentgyorgy.hu"
@@ -66877,9 +67482,7 @@
         "wikidata": [
           "borzavar.hu"
         ],
-        "wikidata_scrape": [
-          "borzavar.hu"
-        ],
+        "wikidata_scrape": [],
         "wikidata_redirect": [],
         "guess": [
           "borzavar.hu"
@@ -67051,7 +67654,9 @@
         "wikidata": [
           "mezokovacshaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mezokovacshaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mezokovacshaza.hu"
@@ -67239,7 +67844,9 @@
         "wikidata": [
           "lorinci.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "lorinci.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "lorinci.hu"
@@ -67311,7 +67918,9 @@
         "wikidata": [
           "gorcsony.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gorcsony.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gorcsony.hu"
@@ -67387,7 +67996,9 @@
         "wikidata": [
           "tihany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tihany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tihany.hu",
@@ -67460,7 +68071,9 @@
         "wikidata": [
           "mekenyes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "mekenyes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "mekenyes.hu"
@@ -68535,7 +69148,9 @@
         "wikidata": [
           "gyekenyes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyekenyes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyekenyes.hu"
@@ -68655,7 +69270,9 @@
         "wikidata": [
           "szalaszend.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szalaszend.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szalaszend.hu"
@@ -68795,7 +69412,9 @@
         "wikidata": [
           "ottomos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "ottomos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "ottomos.hu"
@@ -69180,7 +69799,9 @@
         "wikidata": [
           "visonta.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "visonta.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "visonta.hu"
@@ -69350,7 +69971,9 @@
         "wikidata": [
           "gyorsag.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyorsag.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyorsag.hu"
@@ -69500,7 +70123,9 @@
         "wikidata": [
           "pusztacsalad.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "pusztacsalad.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "pusztacsalad.hu"
@@ -69714,7 +70339,9 @@
         "wikidata": [
           "fulophaza.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "fulophaza.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "fulophaza.hu"
@@ -70022,7 +70649,9 @@
         "wikidata": [
           "zalamerenye.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "zalamerenye.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "zalamerenye.hu"
@@ -70046,7 +70675,9 @@
         "wikidata": [
           "kunsziget.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kunsziget.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kunsziget.hu"
@@ -70222,7 +70853,9 @@
         "wikidata": [
           "cseteny.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "cseteny.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "cseteny.hu"
@@ -70430,7 +71063,9 @@
         "wikidata": [
           "gyorujfalu.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyorujfalu.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyorujfalu.hu"
@@ -70961,7 +71596,9 @@
         "guess": [
           "szentdenes.hu"
         ],
-        "guess_scrape": [],
+        "guess_scrape": [
+          "szentdenes.hu"
+        ],
         "guess_redirect": []
       },
       "flags": [
@@ -71006,7 +71643,9 @@
         "wikidata": [
           "bugyi.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "bugyi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "bugyi.hu"
@@ -71173,7 +71812,9 @@
         "wikidata": [
           "kirald.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kirald.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kirald.hu"
@@ -71465,7 +72106,9 @@
         "wikidata": [
           "marko.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "marko.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "marko.hu"
@@ -71509,7 +72152,9 @@
         "wikidata": [
           "kakucs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kakucs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kakucs.hu"
@@ -71605,7 +72250,9 @@
         "wikidata": [
           "devecser.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "devecser.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "devecser.hu"
@@ -71653,7 +72300,9 @@
         "wikidata": [
           "nyirabrany.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nyirabrany.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nyirabrany.hu"
@@ -71921,7 +72570,9 @@
         "wikidata": [
           "magyarnandor.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "magyarnandor.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "magyarnandor.hu"
@@ -72085,7 +72736,9 @@
         "wikidata": [
           "szegvar.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szegvar.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szegvar.hu"
@@ -72257,7 +72910,10 @@
         "wikidata": [
           "godollo.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "godollo.hu",
+          "kaloriagodollo.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "godollo.hu",
@@ -72404,7 +73060,11 @@
         "wikidata": [
           "fot.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "fot.hu",
+          "fotikozszolg.hu",
+          "fotiovi.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "fot.hu",
@@ -72735,7 +73395,9 @@
         "wikidata": [
           "deg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "deg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "deg.hu"
@@ -73029,8 +73691,12 @@
           "csot.hu",
           "csotkozseg.hu"
         ],
-        "guess_scrape": [],
-        "guess_redirect": []
+        "guess_scrape": [
+          "csot.hu"
+        ],
+        "guess_redirect": [
+          "csotkozseg.hu"
+        ]
       },
       "flags": [
         "guess_only"
@@ -73076,7 +73742,9 @@
         "wikidata": [
           "tarkozseg.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "tarkozseg.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "tar.hu",
@@ -73175,7 +73843,9 @@
         "wikidata": [
           "nagylozs.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "nagylozs.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "nagylozs.hu"
@@ -73586,7 +74256,9 @@
         "wikidata": [
           "csatka.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "csatka.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "csatka.hu"
@@ -73804,7 +74476,9 @@
         "wikidata": [
           "doboz.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "doboz.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "doboz.hu"
@@ -73922,7 +74596,9 @@
         "wikidata": [
           "holloko.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "holloko.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "holloko.hu"
@@ -74429,7 +75105,9 @@
         "wikidata": [
           "gyomaendrod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "gyomaendrod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "gyomaendrod.hu"
@@ -74529,7 +75207,9 @@
         "wikidata": [
           "matraterenye.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "matraterenye.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "matraterenye.hu"
@@ -74706,7 +75386,9 @@
         "wikidata": [
           "felsolajos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "felsolajos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "felsolajos.hu"
@@ -74926,7 +75608,9 @@
         "wikidata": [
           "petofibanya.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "petofibanya.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "petofibanya.hu"
@@ -75024,7 +75708,9 @@
         "wikidata": [
           "veroce.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "veroce.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "veroce.hu"
@@ -75048,7 +75734,9 @@
         "wikidata": [
           "kismaros.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kismaros.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kismaros.hu"
@@ -76091,7 +76779,9 @@
         "wikidata": [
           "kerepes.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kerepes.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kerepes.hu"
@@ -76174,8 +76864,8 @@
       "name": "Kulcs",
       "county": "Fejér",
       "domain": "kulcs.eu",
-      "source": "wikidata",
-      "confidence": "low",
+      "source": "source_agreement",
+      "confidence": "high",
       "sources_detail": {
         "override": [],
         "override_scrape": [],
@@ -76183,7 +76873,9 @@
         "wikidata": [
           "kulcs.eu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "kulcs.eu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "kulcs.hu"
@@ -76191,9 +76883,7 @@
         "guess_scrape": [],
         "guess_redirect": []
       },
-      "flags": [
-        "single_source"
-      ]
+      "flags": []
     },
     "34218": {
       "id": "34218",
@@ -76209,7 +76899,9 @@
         "wikidata": [
           "uzsa.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "uzsa.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "uzsa.hu"
@@ -76257,7 +76949,9 @@
         "wikidata": [
           "szantod.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szantod.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szantod.hu"
@@ -76403,7 +77097,9 @@
         "wikidata": [
           "berente.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "berente.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "berente.hu"
@@ -76627,7 +77323,9 @@
         "wikidata": [
           "szorgalmatos.hu"
         ],
-        "wikidata_scrape": [],
+        "wikidata_scrape": [
+          "szorgalmatos.hu"
+        ],
         "wikidata_redirect": [],
         "guess": [
           "szorgalmatos.hu"
