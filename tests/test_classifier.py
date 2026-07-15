@@ -332,6 +332,31 @@ class TestAggregate:
         # No MX, secondary evidence only → 0.20 base + 1 extra kind × 0.02
         assert result.confidence == pytest.approx(0.22)
 
+    def test_independent_wins_over_hun_isp_when_self_hosted(self):
+        """HUN_ISP ASN evidence + MX/SPF matching the muni's own domain → INDEPENDENT wins."""
+        evidence = [
+            _ev(SignalKind.ASN, Provider.HUN_ISP),
+        ]
+        result, _ = _aggregate(
+            evidence,
+            mx_hosts=["mail.nagykapornak.eu"],
+            spf_raw="v=spf1 +a +mx -all",
+            domain="nagykapornak.hu",
+        )
+        assert result.provider == Provider.INDEPENDENT
+        # ind_mx_spf rule (0.90) + ASN boost (0.02) = 0.92
+        assert result.confidence == pytest.approx(0.92)
+
+    def test_hun_isp_still_wins_when_not_independent(self):
+        """HUN_ISP ASN evidence with a non-Hungarian-looking MX → HUN_ISP still wins."""
+        evidence = [
+            _ev(SignalKind.ASN, Provider.HUN_ISP),
+        ]
+        result, _ = _aggregate(evidence, mx_hosts=["mail.example.de"], spf_raw="")
+        assert result.provider == Provider.HUN_ISP
+        # hun_isp_mx rule (0.40) + ASN boost (0.02) = 0.42
+        assert result.confidence == pytest.approx(0.42)
+
     def test_spf_ip_alone_no_winner(self):
         """SPF_IP(Google) alone → UNKNOWN (no MX hosts, not Hungarian)."""
         evidence = [

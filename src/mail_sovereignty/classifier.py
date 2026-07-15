@@ -256,13 +256,19 @@ def _aggregate(
     if primary_scores:
         winner = max(primary_scores, key=primary_scores.get)
         confidence, rule_name = _rule_confidence(winner, by_provider[winner], gateway)
-    elif any(e.provider == Provider.HUN_ISP for e in evidence):
-        winner = Provider.HUN_ISP
+    elif _is_hungarian_independent(_mx_hosts, spf_raw, domain):
+        # Checked before the ASN-only HUN_ISP fallback: a domain can sit in
+        # a Hungarian ISP's ASN and still be self-hosted by the municipality
+        # (e.g. co-located on ISP address space) — the independent signal
+        # (MX/SPF matching the muni's own domain or .hu TLD) is more
+        # specific and must win even when weaker HUN_ISP ASN evidence is
+        # also present.
+        winner = Provider.INDEPENDENT
         confidence, rule_name = _fallback_confidence(
             winner, _mx_hosts, spf_raw, evidence
         )
-    elif _is_hungarian_independent(_mx_hosts, spf_raw, domain):
-        winner = Provider.INDEPENDENT
+    elif any(e.provider == Provider.HUN_ISP for e in evidence):
+        winner = Provider.HUN_ISP
         confidence, rule_name = _fallback_confidence(
             winner, _mx_hosts, spf_raw, evidence
         )
