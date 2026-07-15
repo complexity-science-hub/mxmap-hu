@@ -371,6 +371,14 @@ async function loadData() {
   });
   showGenerated(mapData);
 
+  // NOTE: Budapest is one polygon in the TopoJSON (id-based join via
+  // featureMunicipalityId(), see below), but `muni` (loaded from data.json)
+  // contains 23 additional per-district Budapest entries with their own
+  // ids that have no matching polygon — they never render individually on
+  // the map. The counts below iterate Object.keys(muni) unfiltered, so
+  // catCounts / levelCounts (and the numbers shown in the legend) include
+  // these 23 non-rendering district entries. This is a known, accepted
+  // limitation — see README.md "Classification system".
   // Count by jurisdiction and confidence level
   const catCounts = { 'us-cloud': 0, 'hungarian-based': 0, 'european-based': 0 };
   const levelCounts = {

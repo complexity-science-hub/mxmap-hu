@@ -256,6 +256,17 @@ async def run(domains_path: Path, output_path: Path) -> None:
             len(classification.evidence),
         )
 
+    # NOTE: Budapest is modeled as ONE polygon (id 13578) in the TopoJSON
+    # source (data/LAU_HU_01M_2024_3035.topo.json — Eurostat GISCO LAU), but
+    # data/data.json / municipalities.csv contains 24 Budapest-related
+    # entries: the whole-city entry plus 23 individual district entries
+    # ("Budapest NN. ker.", county="Budapest"). The 23 district entries are
+    # counted below (and in the frontend legend, see index.html) even though
+    # they have no matching polygon and therefore never render on the map.
+    # Aggregate percentages include these 23 non-rendering entries — see
+    # README.md "Classification system" for details. Do not filter or
+    # aggregate them here without a deliberate design decision, since that
+    # would silently change the reported totals.
     # Final counts
     counts = {}
     cat_counts: dict[str, int] = {}

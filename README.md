@@ -50,6 +50,18 @@ flowchart TD
 see [`classifier.py`](src/mail_sovereignty/classifier.py) for the full implementation details, but in summary,
 we use a weighted evidence system where each probe contributes signals of varying strength towards different provider classifications.
 
+### Known limitation: Budapest districts
+
+Budapest's 23 districts ("Budapest 01. ker." – "Budapest 23. ker.") each have their own
+municipal government and are individually classified in `data.json`, in addition to a
+whole-city entry. However, the map's TopoJSON source (Eurostat GISCO LAU,
+`data/LAU_HU_01M_2024_3035.topo.json`) models Budapest as a single polygon, so the 23
+district classifications have no matching polygon and never render individually on the
+map. They are still included, unfiltered, in the aggregate summary statistics — both the
+Python pipeline's counts/category totals (`pipeline.py`) and the frontend legend counts
+(`index.html`). Keep this in mind when interpreting aggregate percentages: Budapest is
+effectively represented up to 24 times in the totals but only once visually on the map.
+
 
 ## Quick start
 
