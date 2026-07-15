@@ -551,6 +551,29 @@ class TestResolveMunicipalityDomain:
         assert result["confidence"] == "low"
         assert "guess_only" in result["flags"]
 
+    async def test_lgov_platform_flag_set_when_domain_resolves(self):
+        """A domain resolved via the .asp.lgov.hu guess pattern gets flagged."""
+        m = {
+            "id": "999",
+            "name": "Testfalva",
+            "county": "Zala",
+            "website": "",
+        }
+        overrides = {}
+        client = AsyncMock()
+
+        async def fake_lookup_mx(domain):
+            if domain == "testfalva.asp.lgov.hu":
+                return ["mail.testfalva.asp.lgov.hu"]
+            return []
+
+        with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
+            result = await resolve_municipality_domain(m, overrides, client)
+
+        assert result["domain"] == "testfalva.asp.lgov.hu"
+        assert result["source"] == "guess"
+        assert "lgov_platform" in result["flags"]
+
     async def test_parked_mx_guess_domain_not_accepted(self):
         """A guessed domain whose only MX is a parking-service host is rejected."""
         m = {

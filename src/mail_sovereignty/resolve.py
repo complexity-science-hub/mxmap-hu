@@ -70,6 +70,10 @@ def guess_domains(name: str) -> list[str]:
     suffixes = ["kozseg", "nagykozseg", "varos", "falu", "onkormanyzat"]
     for slug in slugs:
         candidates.add(f"{slug}.hu")
+        # As of the last full pipeline run, this pattern has never won a
+        # match (see the lgov_platform flag below) — kept anyway since it's
+        # a cheap extra guess in case the central ASP platform starts
+        # hosting municipal mail MX in the future.
         candidates.add(f"{slug}.asp.lgov.hu")
         for suffix in suffixes:
             candidates.add(f"{slug}{suffix}.hu")
@@ -606,7 +610,11 @@ async def resolve_municipality_domain(
     website_wd = municipality.get("website", "")
     wd_domain, wd_sc, wd_rc = await _get_cached(website_wd)
 
-    if wd_domain and not _is_skip_domain(wd_domain) and not detect_mismatch(name, wd_domain):
+    if (
+        wd_domain
+        and not _is_skip_domain(wd_domain)
+        and not detect_mismatch(name, wd_domain)
+    ):
         wd_mx = await lookup_mx(wd_domain)
         if wd_mx and not _is_parked_mx(wd_mx):
             sources["wikidata"].add(wd_domain)
@@ -725,6 +733,12 @@ async def resolve_municipality_domain(
 def _add_shared_domain_flags(results: dict[str, dict[str, Any]]) -> None:
     """Flag domains used by more than one municipality.
     Mutates results in-place.
+
+    NOTE: this is an exact string match on the normalized domain only. It
+    will not catch joint municipal offices (közös önkormányzati hivatal)
+    that share mail infrastructure but use different domains per village
+    (e.g. different MX hosts pointing at the same underlying mailbox
+    provider) — see README.md "Classification system" for the caveat.
     """
     domain_to_id: dict[str, list[str]] = {}
 

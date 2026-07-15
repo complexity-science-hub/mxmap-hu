@@ -63,6 +63,10 @@ class Provider(str, enum.Enum):
     UNAS = "unas"
 
     # Other
+    # UNRESOLVED does NOT mean "domain/DNS could not be resolved" — the
+    # domain has a working MX record, but it matched no known provider
+    # signature and didn't look Hungarian-hosted either (see
+    # classifier._aggregate). UNKNOWN means no MX record was found at all.
     UNRESOLVED = "unresolved"
     UNKNOWN = "unknown"
 

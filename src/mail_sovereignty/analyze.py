@@ -194,7 +194,7 @@ def report_overall_summary(data: dict[str, Any], munis: dict[str, Any]) -> None:
     if shown < total:
         rest = total - shown
         print(
-            f"  {_dim(f'(other providers)' + '  ' * 6)} {rest:>6,}  {_pct(rest, total)}"
+            f"  {_dim('(other providers)' + '  ' * 6)} {rest:>6,}  {_pct(rest, total)}"
         )
 
 

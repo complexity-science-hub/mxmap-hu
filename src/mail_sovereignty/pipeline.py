@@ -28,6 +28,15 @@ _CATEGORY_MAP: dict[str, str] = {
     "unresolved": "unresolved",
     "unknown": "unknown",
     # Hungarian providers
+    # NOTE: these two mappings are editorial calls, not measurements:
+    # - "t-online" -> hungarian-based: Magyar Telekom is majority-owned by
+    #   Deutsche Telekom, so this counts a foreign-parent-owned ISP as
+    #   domestic based on brand/market presence, not ownership.
+    # - "independent" -> hungarian-based: self-hosted MX is treated as
+    #   domestic infrastructure, but a municipality's mail server could be
+    #   self-hosted on a non-Hungarian VPS (e.g. a German host) and would
+    #   still land here. See README.md "Classification system" for the
+    #   full caveat list.
     "independent": "hungarian-based",
     "hungarian-isp": "hungarian-based",
     "dotroll": "hungarian-based",
