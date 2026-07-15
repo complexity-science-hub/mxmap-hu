@@ -7,6 +7,7 @@ import respx
 import stamina
 
 from mail_sovereignty.resolve import (
+    _is_parked_mx,
     _is_ssl_error,
     _process_scrape_response,
     build_urls,
@@ -74,6 +75,34 @@ class TestGuessDomains:
         assert "debrecenvaros.hu" in domains
         assert "debrecenfalu.hu" in domains
         assert "debrecenonkormanyzat.hu" in domains
+
+
+# ── _is_parked_mx() ─────────────────────────────────────────────────
+
+
+class TestIsParkedMx:
+    def test_kv_de_parking(self):
+        assert _is_parked_mx(["parking14.kv.de"]) is True
+
+    def test_stackmail_parking(self):
+        assert _is_parked_mx(["mx.stackmail.com"]) is True
+
+    def test_legitimate_small_hoster_not_flagged(self):
+        assert _is_parked_mx(["mailcenter.jacsa.net"]) is False
+
+    def test_empty_list(self):
+        assert _is_parked_mx([]) is False
+
+    def test_mixed_hosts_one_parked(self):
+        """Any single parked MX host in the list is enough to flag."""
+        assert _is_parked_mx(["mx1.legit-host.hu", "parking14.kv.de"]) is True
+
+    def test_exact_domain_match(self):
+        assert _is_parked_mx(["kv.de"]) is True
+
+    def test_lookalike_domain_not_flagged(self):
+        """Guard against over-broad matching: not a suffix of a listed pattern."""
+        assert _is_parked_mx(["notkv.de"]) is False
 
 
 # ── detect_mismatch() ────────────────────────────────────────
@@ -521,6 +550,28 @@ class TestResolveMunicipalityDomain:
         assert result["source"] == "guess"
         assert result["confidence"] == "low"
         assert "guess_only" in result["flags"]
+
+    async def test_parked_mx_guess_domain_not_accepted(self):
+        """A guessed domain whose only MX is a parking-service host is rejected."""
+        m = {
+            "id": "999",
+            "name": "Zalaszentmarton",
+            "county": "Zala",
+            "website": "",
+        }
+        overrides = {}
+        client = AsyncMock()
+
+        async def fake_lookup_mx(domain):
+            if domain == "zalaszentmarton.hu":
+                return ["mx.stackmail.com"]
+            return []
+
+        with patch("mail_sovereignty.resolve.lookup_mx", side_effect=fake_lookup_mx):
+            result = await resolve_municipality_domain(m, overrides, client)
+
+        assert result["domain"] == ""
+        assert result["source"] == "none"
 
     async def test_id_only_flag(self):
         """Municipalities only in ID get the id_only flag."""

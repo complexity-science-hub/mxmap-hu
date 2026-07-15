@@ -130,6 +130,24 @@ SKIP_DOMAINS = {
     "eoldal.hu",
 }
 
+# MX hostnames belonging to domain-parking services. lookup_mx() succeeding
+# on one of these doesn't mean the municipality controls the domain — it
+# means the domain is parked/for-sale and DNS returns a placeholder MX.
+# Confirmed evidence: data/data.json id 16081 "Kispáli" (kispali.eu ->
+# parking14.kv.de, Wikidata-sourced) and id 13091 "Zalaszentmárton"
+# (zalaszentmarton.hu -> mx.stackmail.com, guessed {slug}.hu domain).
+PARKED_MX_PATTERNS = {
+    "kv.de",
+    "stackmail.com",
+    "sedoparking.com",
+    "parkingcrew.net",
+    "above.com",
+    "bodis.com",
+    "undeveloped.com",
+    "dan.com",
+    "hugedomains.com",
+}
+
 SUBPAGES = [
     # contact pages
     "/kapcsolat",

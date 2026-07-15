@@ -18,6 +18,7 @@ from loguru import logger
 from mail_sovereignty.constants import (
     CONCURRENCY_POSTPROCESS,
     EMAIL_RE,
+    PARKED_MX_PATTERNS,
     SOURCE_KEYS,
     SKIP_DOMAINS,
     SPARQL_QUERY,
@@ -250,6 +251,15 @@ def _is_skip_domain(domain: str) -> bool:
     )
 
 
+def _is_parked_mx(mx_hosts: list[str]) -> bool:
+    """Return True if any MX host matches a known parked-domain signature."""
+    for host in mx_hosts:
+        h = host.lower().rstrip(".")
+        if any(h == p or h.endswith("." + p) for p in PARKED_MX_PATTERNS):
+            return True
+    return False
+
+
 def extract_email_domain_counts(html: str) -> Counter[str]:
     """Count email domains found in HTML, including TYPO3-obfuscated emails."""
     counts: Counter[str] = Counter()
@@ -423,11 +433,12 @@ async def _collect_website_source_candidates(
     candidates = website_domains.most_common()
     mx_results = await asyncio.gather(*[lookup_mx(d) for d, _ in candidates])
     for (domain, count), mx in zip(candidates, mx_results):
-        if mx:
+        if mx and not _is_parked_mx(mx):
             scrape_counts[domain] += count
 
     if redirect_domain:
-        if await lookup_mx(redirect_domain):
+        redirect_mx = await lookup_mx(redirect_domain)
+        if redirect_mx and not _is_parked_mx(redirect_mx):
             redirect_counts[redirect_domain] += 1
 
     return website_domain, scrape_counts, redirect_counts
@@ -595,13 +606,10 @@ async def resolve_municipality_domain(
     website_wd = municipality.get("website", "")
     wd_domain, wd_sc, wd_rc = await _get_cached(website_wd)
 
-    if (
-        wd_domain
-        and not _is_skip_domain(wd_domain)
-        and not detect_mismatch(name, wd_domain)
-        and await lookup_mx(wd_domain)
-    ):
-        sources["wikidata"].add(wd_domain)
+    if wd_domain and not _is_skip_domain(wd_domain) and not detect_mismatch(name, wd_domain):
+        wd_mx = await lookup_mx(wd_domain)
+        if wd_mx and not _is_parked_mx(wd_mx):
+            sources["wikidata"].add(wd_domain)
 
     _add_scrape_candidates(
         sources=sources,
@@ -624,7 +632,8 @@ async def resolve_municipality_domain(
             logger.debug("Filtered skipped guess candidate for {}: {}", name, guess)
             continue
         guesses.append(guess)
-        if await lookup_mx(guess):
+        guess_mx = await lookup_mx(guess)
+        if guess_mx and not _is_parked_mx(guess_mx):
             sources["guess"].add(guess)
 
     # ── Step 4: Agreement check (before guess scrape) ─────────────────────────
